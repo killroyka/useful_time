@@ -1,5 +1,6 @@
 from django.db import models
 from projects.models import Project
+from django.core.validators import ValidationError
 
 
 class Record(models.Model):
@@ -17,6 +18,11 @@ class Record(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        if self.endpoint is not None:
+            if self.startpoint > self.endpoint:
+                raise ValidationError('Обратите внимание на дату и время: нельзя закончить то, что ещё не началось')
 
     def get_back_longitude(self) -> int:
         """Метод для бэка. Возвращает время, потраченное на задание в секундах.
