@@ -1,6 +1,7 @@
-from django.db import models
-from projects.models import Project
 from django.core.validators import ValidationError
+from django.db import models
+
+from projects.models import Project
 
 
 class Record(models.Model):
