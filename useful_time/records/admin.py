@@ -1,3 +1,7 @@
 from django.contrib import admin
+from records.models import Record
 
-# Register your models here.
+
+@admin.register(Record)
+class RecordAdmin(admin.ModelAdmin):
+    list_display = ('project', 'name')
