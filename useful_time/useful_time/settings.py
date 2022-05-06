@@ -93,6 +93,11 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static_dev"
+]
+
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
