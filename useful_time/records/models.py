@@ -20,7 +20,7 @@ class Record(models.Model):
 
     def clean(self):
         if self.endpoint is not None:
-            if self.startpoint > self.endpoint:
+            if self.startpoint >= self.endpoint:
                 raise ValidationError('Обратите внимание на дату и время: нельзя закончить то, что ещё не началось')
 
     def get_back_longitude(self) -> int:
