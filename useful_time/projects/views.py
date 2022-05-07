@@ -9,6 +9,4 @@ class ProjectsListView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         projects = Project.objects.prefetch_related("records").filter(user_id=self.request.user.id)
-        for project in projects:
-            project.records = project.records.set()[5:]
         return {"projects": projects}
