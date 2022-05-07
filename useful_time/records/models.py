@@ -1,6 +1,7 @@
-from django.db import models
-from projects.models import Project
 from django.core.validators import ValidationError
+from django.db import models
+
+from projects.models import Project
 
 
 class Record(models.Model):
@@ -10,11 +11,9 @@ class Record(models.Model):
     startpoint = models.DateTimeField('Начало', blank=False, null=False)
     endpoint = models.DateTimeField('Конец', blank=True, null=True)
 
-
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
-
 
     def __str__(self):
         return self.name
