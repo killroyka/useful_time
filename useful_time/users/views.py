@@ -1,10 +1,19 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.forms import (AuthenticationForm, PasswordChangeForm,
+                                       PasswordResetForm, UserCreationForm)
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, \
-    PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import (LoginView, LogoutView,
+                                       PasswordChangeDoneView,
+                                       PasswordChangeView,
+                                       PasswordResetCompleteView,
+                                       PasswordResetConfirmView,
+                                       PasswordResetDoneView,
+                                       PasswordResetView)
+from django.core.mail import EmailMessage
 from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
+
+from users.forms import RegistrationForm
 
 
 class UserLoginView(LoginView):
@@ -22,7 +31,7 @@ class UserLogoutView(LogoutView):
 
 
 class UserSignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = RegistrationForm
     success_url = reverse_lazy('login')
     template_name = 'users/signup.html'
 
@@ -30,6 +39,15 @@ class UserSignUpView(CreateView):
         if not request.user.is_authenticated:
             return super().dispatch(request, *args, **kwargs)
         return redirect('/')
+
+    # def post(self, request, *args, **kwargs):
+    #     self.object = None
+    #     form_user = UserSignUpView.form_class(request.POST or None)
+    #     if form_user.is_valid():
+    #         message = EmailMessage('Подтверждение', 'Пароль 000000', to=[form_user.cleaned_data['email']])
+    #         message.send()
+    #         return self.form_valid(form_user)
+    #     return self.form_invalid(form_user)
 
 
 class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
