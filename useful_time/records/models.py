@@ -1,5 +1,3 @@
-import datetime
-
 from django.core.validators import ValidationError
 from django.db import models
 
