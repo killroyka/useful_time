@@ -5,9 +5,10 @@ from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include("homepage.urls")),
+    path('', include('homepage.urls')),
     path('auth/', include('users.urls')),
-    path("projects/", include("projects.urls"))
+    path('projects/', include('projects.urls')),
+    path('records/', include('records.urls'))
 ]
 
 if settings.DEBUG:
