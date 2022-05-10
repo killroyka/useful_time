@@ -23,6 +23,9 @@ class Record(models.Model):
             if self.startpoint >= self.endpoint:
                 raise ValidationError('Обратите внимание на дату и время: нельзя закончить то, что ещё не началось')
 
+    def get_startpoint_seconds(self) -> int:
+        return int(self.startpoint.timestamp())
+
     def get_back_longitude(self) -> int:
         """Метод для бэка. Возвращает время, потраченное на задание в секундах.
          Если запись ещё не завершена, то вернет -1"""
