@@ -1,13 +1,22 @@
 var days, hours, minutes, seconds;
-var countdown = document.getElementById('counter');
 
-setInterval(function (start_date) {
+all_counters = document.querySelectorAll('.counter');
 
-    // find the amount of "seconds" between now and target
-    var current_date = new Date().getTime();
+Array.from(all_counters).forEach((element, index) => {
+        element.innerHTML = getTime(new Date((Number(element.dataset.start) - 3600 * 3) * 1000 ))
+});
+
+setInterval( function () {
+    Array.from(all_counters).forEach((element, index) => {
+        element.innerHTML = getTime(new Date((Number(element.dataset.start) - 3600 * 3) * 1000 ))
+    });
+}, 1000);
+
+function getTime(start_date) {
+
+    var current_date = new Date();
     var seconds = (current_date - start_date) / 1000;
 
-    // do some time calculations
     days = parseInt(seconds / 86400);
     seconds = seconds % 86400;
 
@@ -17,10 +26,9 @@ setInterval(function (start_date) {
     minutes = parseInt(seconds / 60);
     seconds = parseInt(seconds % 60);
 
-    // format countdown string + set tag value
-    countdown.innerHTML = '<span class="days">' + days +
+    return '<span class="days">' + days +
      ' <b>День</b></span> <span class="hours">' + hours +
       ' <b>Час</b></span> <span class="minutes">' + minutes +
       ' <b>Минута</b></span> <span class="seconds">' + seconds + ' <b>Секунда</b></span>';
 
-}, 1000);
+};
