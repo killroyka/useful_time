@@ -3,33 +3,46 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
-{% load static %}
-<h1 class="form_alert">Cписок записей пользователя</h1>
-<a class="btn btn-primary" href="add">Создать новый таймер</a>
-<div class="row">
-    {% for record in records %}
-        <div class="col-sm-12 col-md-6 col-lg-4 my-3" >
-            <div class="card" style="width: 100%; border: solid {{record.project.color}}">
-                <div class="card-header">
-                    {{record.name}}
-                </div>
-                <div class="card-body">
-                    <p>Время начала: {{record.startpoint}}</p>
-                    {% if record.endpoint %}
-                        <p>Время окончания: {{record.endpoint}}</p>
-                        <p>Время: {{record.get_front_longitude}}</p>
-                    {% else %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            <p class="counter" data-start="{{ record.get_startpoint_seconds }}" data-id="{{ record.id }}"></p>
-                            <input type="hidden" name="id" value="{{record.id}}">
-                            <input class="btn btn-success" type="submit" value="Остановить таймер">
-                        </form>
-                    {% endif %}
+    {% load static %}
+    {% if title %}
+        <h1 class="form_alert">{{ title }}</h1>
+    {% else %}
+        <h1 class="form_alert">Cписок записей пользователя</h1>
+    {% endif %}
+    <a class="btn btn-primary" href="/records/add">Создать новый таймер</a>
+
+    <div class="row">
+        {% for record in records %}
+            <div class="col-sm-12 col-md-6 col-lg-4 my-3">
+                <div class="card" style="width: 100%; border: solid {{ record.project.color }}">
+                    <div class="card-header">
+                        {{ record.name }}
+                    </div>
+                    <div class="card-body">
+                        <p>Время начала: {{ record.startpoint }}</p>
+                        {% if record.endpoint %}
+                            <p>Время окончания: {{ record.endpoint }}</p>
+                            <p>Время: {{ record.get_front_longitude }}</p>
+                        {% else %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <p class="counter" data-start="{{ record.get_startpoint_seconds }}"
+                                   data-id="{{ record.id }}"></p>
+                                <input type="hidden" name="id" value="{{ record.id }}">
+                                <input class="btn btn-success" type="submit" value="Остановить таймер"
+                                       name="stop_timer">
+                            </form>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
-</div>
-<script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
+        {% endfor %}
+    </div>
+    {% if title %}
+        <form method="POST">
+            {% csrf_token %}
+            <input class="btn btn-danger" type="submit" value="Удалить проект" name="project_delete">
+        </form>
+    {% endif %}
+    <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}

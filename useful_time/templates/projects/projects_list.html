@@ -3,22 +3,27 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
-{% load static %}
-<h1 class="form_alert">список проектов пользователя</h1>
-<div class="row">
-    {% for project in projects %}
-        <div class="col-sm-12 col-md-6 col-lg-4 my-3" >
-            <div class="card" style="width: 100%; border: solid {{project.color}}">
-                <div class="card-header">
-                    {{project.name}}
+    {% load static %}
+    <h1 class="form_alert">список проектов пользователя</h1>
+
+    <div class="row">
+        {% for project in projects %}
+
+            <div class="col-sm-12 col-md-6 col-lg-4 my-3">
+                <div class="card" style="width: 100%; border: solid {{ project.color }}">
+                    <a class="item" href="{{ project.id }}">
+                        <div class="card-header">
+                            {{ project.name }}
+
+                        </div>
+                        <div class="card-body">
+                            <p>{{ project.description }}</p>
+                        </div>
+                        {{ project.recotds }}
+                    </a>
                 </div>
-                <div class="card-body">
-                    <p>{{project.description}}</p>
-                </div>
-                {{project.recotds}}
             </div>
-        </div>
-    {% endfor %}
-</div>
-    <a href="add/">добавить проект</a>
+        {% endfor %}
+    </div>
+    <a class="btn btn-primary" href="add">Создать новый проект</a>
 {% endblock %}
