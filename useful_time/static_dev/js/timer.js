@@ -2,6 +2,10 @@ var days, hours, minutes, seconds;
 
 all_counters = document.querySelectorAll('.counter');
 
+Array.from(all_counters).forEach((element, index) => {
+        element.innerHTML = getTime(new Date((Number(element.dataset.start) - 3600 * 3) * 1000 ))
+});
+
 setInterval( function () {
     Array.from(all_counters).forEach((element, index) => {
         element.innerHTML = getTime(new Date((Number(element.dataset.start) - 3600 * 3) * 1000 ))
