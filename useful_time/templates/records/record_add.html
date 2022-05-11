@@ -3,9 +3,5 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-primary" type="submit" value="Начать запись">
-</form>
+{% include 'includes/universal_form.html' with message='Создание записи' %}
 {% endblock %}
