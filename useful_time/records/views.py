@@ -36,20 +36,11 @@ class RecordView(LoginRequiredMixin, UpdateView):
     form_class = RecordForm
     success_url = reverse_lazy('records_list')
 
-    def get_form(self, form_class=None):
-        form = super(RecordView, self).get_form(form_class=RecordView.form_class)
-        record_object = self.get_object()
-
-        attrs = form.fields['startpoint'].widget.attrs
-        attrs['value'] = str(record_object.startpoint.replace(microsecond=0).isoformat())
-        form.fields['startpoint'].widget.__init__(attrs=attrs)
-
-        if record_object.endpoint:
-            attrs = form.fields['endpoint'].widget.attrs
-            attrs['value'] = str(record_object.endpoint.replace(microsecond=0).isoformat())
-            form.fields['endpoint'].widget.__init__(attrs=attrs)
-
-        return form
+    def dispatch(self, request, *args, **kwargs):
+        record = self.get_object()
+        if record.endpoint is None:
+            return redirect(RecordView.success_url)
+        return super(RecordView, self).dispatch(request, *args, **kwargs)
 
 
 class RecordAddView(LoginRequiredMixin, CreateView):
