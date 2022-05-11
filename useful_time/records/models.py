@@ -55,3 +55,5 @@ class Record(models.Model):
         if seconds:
             out.append(f'{seconds} сек')
         return ' '.join(out)
+
+

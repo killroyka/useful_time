@@ -3,6 +3,7 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
+
 {% load static %}
 <h1 class="form_alert">Cписок записей пользователя</h1>
 <a class="btn btn-primary" href="add">Создать новый таймер</a>
@@ -25,13 +26,19 @@
                                 <p class="counter" data-start="{{ record.get_startpoint_seconds }}" data-id="{{ record.id }}"></p>
                                 <input type="hidden" name="id" value="{{record.id}}">
                                 <input class="btn btn-success" type="submit" value="Остановить таймер">
+
                             </form>
                         {% endif %}
                     </div>
                 </div>
-            </a>
-        </div>
-    {% endfor %}
-</div>
-<script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
+            </div>
+        {% endfor %}
+    </div>
+    {% if title %}
+        <form method="POST">
+            {% csrf_token %}
+            <input class="btn btn-danger" type="submit" value="Удалить проект" name="project_delete">
+        </form>
+    {% endif %}
+    <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}
