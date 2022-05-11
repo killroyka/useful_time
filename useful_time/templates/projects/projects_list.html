@@ -3,27 +3,33 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
-    {% load static %}
-    <h1 class="form_alert">список проектов пользователя</h1>
+{% load static %}
+<h1 class="form_alert">список проектов пользователя</h1>
 
-    <div class="row">
-        {% for project in projects %}
+<div class="row d-flex justify-content-around">
+    {% for project in projects %}
 
-            <div class="col-sm-12 col-md-6 col-lg-4 my-3">
-                <div class="card" style="width: 100%; border: solid {{ project.color }}">
-                    <a class="item" href="{{ project.id }}">
-                        <div class="card-header">
-                            {{ project.name }}
-
-                        </div>
-                        <div class="card-body">
-                            <p>{{ project.description }}</p>
-                        </div>
-                        {{ project.recotds }}
-                    </a>
+    <div class="col-sm-12 col-md-6 col-lg-4 my-3">
+        <div class="card" style="width: 100%; border: 2px solid {{ project.color }}">
+            <a class="item" href="{{ project.id }}">
+                <div class="card-header">
+                    {{ project.name }}
                 </div>
-            </div>
-        {% endfor %}
+                <div class="card-body">
+                    <h5 class="card-title">Описание проекта</h5>
+                    <p class="card-text">{{ project.description }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for record in project.records.all %}
+                        {% if forloop.counter <= 5 %}
+                            <li class="list-group-item d-flex justify-content-between"><p>{{record.name}}</p> <p>{{record.get_front_longitude}}</p></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </a>
+        </div>
     </div>
-    <a class="btn btn-primary" href="add">Создать новый проект</a>
+    {% endfor %}
+</div>
+<a class="btn btn-primary" href="add">Создать новый проект</a>
 {% endblock %}

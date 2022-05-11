@@ -1,4 +1,5 @@
-from django.forms import ModelForm, TextInput
+from django.forms import ModelForm
+from colorfield.fields import ColorField
 from django.forms import ValidationError
 from .models import Project
 from re import match
@@ -8,9 +9,6 @@ class NewProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = ("name", "description", "color")
-        widgets = {
-            'color': TextInput(attrs={'type': 'color'}),
-        }
 
     def clean_color(self):
         data = self.cleaned_data['color']
