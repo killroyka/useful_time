@@ -31,7 +31,7 @@ class RecordForm(ModelForm):
         }
 
 
-class NewRecordForm(RecordForm):
+class NewRecordForm(ModelForm):
     class Meta(RecordForm.Meta):
         fields = ('name', 'project', 'startpoint')
         widgets = {

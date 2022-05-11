@@ -11,9 +11,11 @@ class Record(models.Model):
     startpoint = models.DateTimeField('Начало', blank=False, null=False)
     endpoint = models.DateTimeField('Конец', blank=True, null=True)
 
+
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
+
 
     def __str__(self):
         return self.name
@@ -55,5 +57,3 @@ class Record(models.Model):
         if seconds:
             out.append(f'{seconds} сек')
         return ' '.join(out)
-
-
