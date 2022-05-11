@@ -15,35 +15,19 @@ class RecordListView(LoginRequiredMixin, ListView):
     template_name = 'records/records_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        id_ = self.kwargs.get('id')
-
         context = super(RecordListView, self).get_context_data(**kwargs)
-        if id_:
-            project = Project.objects.filter(user_id=self.request.user.id, id=id_)
-            prefetch_projects = Prefetch('project', queryset=project)
-            context['records'] = Record.objects.filter(project_id=id_).prefetch_related(prefetch_projects)
-            context['title'] = project.all()[0].name
-        else:
-            projects = Project.objects.filter(user_id=self.request.user.id)
-            prefetch_projects = Prefetch('project', queryset=projects)
-            context['records'] = Record.objects.prefetch_related(prefetch_projects)
+        projects = Project.objects.filter(user_id=self.request.user.id)
+        prefetch_projects = Prefetch('project', queryset=projects)
+        context['records'] = Record.objects.prefetch_related(prefetch_projects)
         return context
 
     def post(self, request, **kwargs):
-        project_id = kwargs.get('id')
-        if 'project_delete' in request.POST:
-            project = Project.objects.get(id=project_id)
-            project.delete()
-            return redirect(f'/projects/')
         record_id = int(request.POST.get('id'))
         record = Record.objects.get(pk=record_id)
         record.endpoint = datetime.now()
         record.save()
 
-        if project_id:
-            return redirect(f'/projects/{project_id}/')
-        else:
-            return redirect(reverse_lazy('records_list'))
+        return redirect(reverse_lazy('records_list'))
 
 
 class RecordView(LoginRequiredMixin, UpdateView):

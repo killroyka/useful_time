@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Подробнее о {{ title }}
+{% endblock %}
+
+{% block content %}
+
+    {% load static %}
+    <h1 class="form_alert">Список записей в проекте "{{ title }}" </h1>
+    {% include 'includes/base_records_list.html' %}
+    <form method="POST">
+        {% csrf_token %}
+        <input class="btn btn-danger" type="submit" value="Удалить проект" name="project_delete">
+        <input class="btn btn-outline-danger" type="submit" value="Изменить проект" name="project_edit">
+    </form>
+    <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
+{% endblock %}
