@@ -22,7 +22,7 @@ class RecordListView(LoginRequiredMixin, ListView):
             project = Project.objects.filter(user_id=self.request.user.id, id=id_)
             prefetch_projects = Prefetch('project', queryset=project)
             context['records'] = Record.objects.filter(project_id=id_).prefetch_related(prefetch_projects)
-            context['title'] = f'Записи в "{project.all()[0].name}"'
+            context['title'] = project.all()[0].name
         else:
             projects = Project.objects.filter(user_id=self.request.user.id)
             prefetch_projects = Prefetch('project', queryset=projects)

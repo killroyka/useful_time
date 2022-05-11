@@ -3,18 +3,25 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
-    {% load static %}
-    <form method="post">
-        {% csrf_token %}
-        {% for field in project_form %}
-            <div>
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-                {% if field.help_text %}
-                    <p>{{ field.help_text|safe }}</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-        <input class="btn btn-primary" type="submit" value="добавить">
-    </form>
+{% load static %}
+<form method="post">
+    {% csrf_token %}
+    {% for field in project_form %}
+    <div>
+        {{ field.errors }}
+        {% if field.name == "color"%}
+        <input type="color" id="id_color" name="color"
+               value="#FFFFFF">
+        <label for="head">Цвет проекта</label>
+        {% else %}
+        {{ field.label_tag }} {{ field }}
+        {% endif %}
+
+        {% if field.help_text %}
+        <p>{{ field.help_text|safe }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+    <input class="btn btn-primary" type="submit" value="добавить">
+</form>
 {% endblock %}
