@@ -19,7 +19,7 @@ class ProjectAddView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         project_form = NewProjectForm(self.request.POST or None)
-        return {'project_form': project_form}
+        return {'form': project_form}
 
     def post(self, request, *args, **kwargs):
         project_form = NewProjectForm(request.POST)
