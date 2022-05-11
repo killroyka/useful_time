@@ -2,7 +2,11 @@
 <div class="row d-flex justify-content-around">
     {% for record in records %}
         <div class="col-sm-12 col-md-6 col-lg-4 my-3">
-            <a href="/records/{{ record.id }}" class="item">
+            {% if record.endpoint %}
+                <a href="/records/{{ record.id }}" class="item">
+            {% else %}
+                <a href="#" class="item">
+            {% endif %}
                 <div class="card" style="width: 100%; border: solid {{ record.project.color }}">
                     <div class="card-header">
                         {{ record.name }}
@@ -15,7 +19,7 @@
                         {% else %}
                             <form method="POST">
                                 {% csrf_token %}
-                                <p class="counter" data-start="{{ record.get_startpoint_seconds }}"
+                                <p class="counter" data-start="{{ record.get_startpoint_isoformat }}"
                                    data-id="{{ record.id }}"></p>
                                 <input type="hidden" name="id" value="{{ record.id }}">
                                 <input class="btn btn-success" type="submit" value="Остановить таймер">

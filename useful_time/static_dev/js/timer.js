@@ -3,12 +3,16 @@ var days, hours, minutes, seconds;
 all_counters = document.querySelectorAll('.counter');
 
 Array.from(all_counters).forEach((element, index) => {
-        element.innerHTML = getTime(new Date((Number(element.dataset.start) - 3600 * 3) * 1000 ))
+    date = new Date(element.dataset.start);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+    element.innerHTML = getTime(date);
 });
 
 setInterval( function () {
     Array.from(all_counters).forEach((element, index) => {
-        element.innerHTML = getTime(new Date((Number(element.dataset.start) - 3600 * 3) * 1000 ))
+        date = new Date(element.dataset.start);
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+        element.innerHTML = getTime(date);
     });
 }, 1000);
 
