@@ -17,11 +17,11 @@
 {% else %}
 <h1 class="form_alert">Список записей пользователя</h1>
 {% endif %}
-<a class="btn btn-primary" href="add">Создать новый таймер</a>
+<a class="btn btn-primary" href="/records/add">Создать новый таймер</a>
 <div class="row d-flex justify-content-around">
     {% for record in records %}
     <div class="col-sm-12 col-md-6 col-lg-4 my-3">
-        <a href="{{record.id}}" style="display: block; text-decoration: none; color: #000;">
+        <a href="/records/{{record.id}}" class="item">
             <div class="card" style="width: 100%; border: solid {{record.project.color}}">
                 <div class="card-header">
                     {{record.name}}
