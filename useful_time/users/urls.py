@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Регистрация
     path('signup/', views.UserSignUpView.as_view(),
          name='signup'),
     path('login/', views.UserLoginView.as_view(),
@@ -21,4 +22,8 @@ urlpatterns = [
          name='password_reset_confirm'),
     path('password_reset_complete/', views.UserPasswordResetCompleteView.as_view(),
          name='password_reset_complete'),
+    # /Регистрация
+
+    path('profile/', views.Profile.as_view(), name='profile')
+
 ]

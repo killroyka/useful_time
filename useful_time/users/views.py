@@ -12,6 +12,8 @@ from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
+from django.views.generic.base import TemplateView
+
 
 from users.forms import RegistrationForm
 
@@ -27,7 +29,7 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    pass
+    success_url = '/'
 
 
 class UserSignUpView(CreateView):
@@ -80,3 +82,7 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 class UserPasswordResetCompleteView(PasswordResetCompleteView):
     success_url = '/'
     template_name = 'users/password_reset_complete.html'
+
+
+class Profile(LoginRequiredMixin, TemplateView):
+    template_name = 'users/profile.html'
