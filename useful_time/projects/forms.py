@@ -4,7 +4,7 @@ from .models import Project
 from re import match
 
 
-class NewProjectForm(ModelForm):
+class ProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = ("name", "description", "color")
