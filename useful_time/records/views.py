@@ -42,6 +42,13 @@ class RecordView(LoginRequiredMixin, UpdateView):
             return redirect(RecordView.success_url)
         return super(RecordView, self).dispatch(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        if 'record_delete' in request.POST:
+            record = Record.objects.get(id=kwargs['pk'])
+            record.delete()
+            return redirect(RecordView.success_url)
+        return super().post(request, *args, **kwargs)
+
 
 class RecordAddView(LoginRequiredMixin, CreateView):
     model = Record

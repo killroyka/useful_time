@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.forms import ModelForm, TextInput, DateInput
+from django.forms import ModelForm, DateInput
 
 from .models import Record
 
@@ -10,7 +10,6 @@ class RecordForm(ModelForm):
         super(RecordForm, self).__init__(*args, **kwargs)
         self.initial['startpoint'] = self.initial['startpoint'].replace(microsecond=0, tzinfo=None).isoformat()
         self.initial['endpoint'] = self.initial['endpoint'].replace(microsecond=0, tzinfo=None).isoformat()
-
 
     class Meta:
         model = Record
