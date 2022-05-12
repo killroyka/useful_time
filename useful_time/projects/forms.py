@@ -1,5 +1,4 @@
 from django.forms import ModelForm
-from colorfield.fields import ColorField
 from django.forms import ValidationError
 from .models import Project
 from re import match

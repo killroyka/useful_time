@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.forms import ModelForm, TextInput, DateInput
+from django.forms import ModelForm, DateInput, BooleanField, CheckboxInput
 
 from .models import Record
 
@@ -32,6 +32,9 @@ class RecordForm(ModelForm):
 
 
 class NewRecordForm(ModelForm):
+    start_right_now = BooleanField(required=False, label='Начать запись сразу после отправки формы')
+
+
     class Meta(RecordForm.Meta):
         fields = ('name', 'project', 'startpoint')
         widgets = {
@@ -41,5 +44,5 @@ class NewRecordForm(ModelForm):
                     'step': '1',
                     'value': datetime.now().replace(microsecond=0).isoformat()
                 },
-            ),
+            )
         }
