@@ -7,8 +7,8 @@ from users.models import User
 
 class Project(models.Model):
     user = models.ForeignKey(User, verbose_name='Пользователь', related_name="projects", on_delete=models.CASCADE)
-    name = models.CharField('Название', help_text='не более 100 символов', max_length=100)
-    description = models.TextField('Описание', help_text='не более 500 символов', max_length=500)
+    name = models.CharField('Название', help_text='не более 20 символов', max_length=20)
+    description = models.TextField('Описание', help_text='не более 200 символов', max_length=200)
     color = ColorField('Цвет', format='hex', validators=[validate_color])
 
     class Meta:
