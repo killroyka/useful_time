@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db.models import Prefetch
 from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.http import HttpResponseNotFound
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -41,7 +41,7 @@ class ProjectAddView(LoginRequiredMixin, FormView):
         return redirect('/projects/add')
 
 
-class ProjectView(LoginRequiredMixin, ListView):
+class ProjectView(LoginRequiredMixin, TemplateView):
     model = Record
     template_name = 'projects/project.html'
 
@@ -49,11 +49,19 @@ class ProjectView(LoginRequiredMixin, ListView):
         pk = self.kwargs.get('pk')
 
         context = super(ProjectView, self).get_context_data(**kwargs)
-        project = Project.objects.filter(user_id=self.request.user.id, id=pk)
+        project = Project.objects.filter(id=pk)
+        if self.request.user.id != project.first().user_id:
+            return None
         prefetch_projects = Prefetch('project', queryset=project)
         context['records'] = Record.objects.filter(project_id=pk).prefetch_related(prefetch_projects)
         context['title'] = project.first().name
         return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if context is None:
+            return HttpResponseNotFound()
+        return self.render_to_response(context)
 
     def post(self, request, **kwargs):
         project_id = kwargs.get('pk')
@@ -75,3 +83,9 @@ class ProjectEditView(LoginRequiredMixin, UpdateView):
     template_name = 'projects/project_edit.html'
     form_class = ProjectForm
     success_url = reverse_lazy('projects_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        project = self.get_object()
+        if project.user.id != request.user.id:
+            return HttpResponseNotFound()
+        return super().post(request, *args, **kwargs)
