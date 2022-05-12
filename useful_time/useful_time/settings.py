@@ -113,3 +113,4 @@ LOGIN_REDIRECT_URL = '/auth/profile'
 LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'users.User'
+LOGOUT_REDIRECT_URL = '/auth/login/'
