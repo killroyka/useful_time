@@ -18,7 +18,7 @@ class RecordListView(LoginRequiredMixin, ListView):
         context = super(RecordListView, self).get_context_data(**kwargs)
         projects = Project.objects.filter(user_id=self.request.user.id)
         prefetch_projects = Prefetch('project', queryset=projects)
-        context['records'] = Record.objects.prefetch_related(prefetch_projects)
+        context['records'] = Record.objects.prefetch_related(prefetch_projects).filter(project__in=projects)
         return context
 
     def post(self, request, **kwargs):
@@ -38,7 +38,7 @@ class RecordView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         record = self.get_object()
-        if record.endpoint is None:
+        if record.endpoint is None or record.project.user.id != request.user.id:
             return redirect(RecordView.success_url)
         return super(RecordView, self).dispatch(request, *args, **kwargs)
 
