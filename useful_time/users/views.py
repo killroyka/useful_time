@@ -29,7 +29,7 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    pass
+    success_url = '/'
 
 
 class UserSignUpView(CreateView):
