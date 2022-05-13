@@ -1,0 +1,31 @@
+<head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages: ["corechart"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var re = /&#x27;/gi
+            var diogramm_data_names = [{%for item in project.get_diogramm_data.diogramm_data_names%} "{{item}}", {%endfor%}]
+            var diogramm_data = {{project.get_diogramm_data.diogramm_data}}
+            var data = [["Заголовок", "Текст заголовка, все дела"]]
+            for (var i=0; i < diogramm_data_names.length; i++){
+                data.push([diogramm_data_names[i], diogramm_data[i]])
+            }
+            var data = google.visualization.arrayToDataTable(data);
+            var options = {
+                title: 'Стратистика времени',
+                pieHole: 0.5,
+                pieSliceTextStyle: {
+                    color: 'black',
+                },
+                legend: 'true'
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('donut_single{{project}}'));
+            chart.draw(data, options);
+        }
+    </script>
+</head>
+<body>
+<div id="donut_single{{project}}" style="width: 100%; height: 100%;"></div>
+</body>
+</html>
