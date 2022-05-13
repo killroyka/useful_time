@@ -2,15 +2,14 @@ from datetime import datetime
 
 from django.db.models import Prefetch
 from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.http import HttpResponseNotFound
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from records.models import Record
-from records.views import RecordListView
 from .models import Project
-from .forms import NewProjectForm
+from .forms import ProjectForm
 from django.shortcuts import redirect
 
 
@@ -26,14 +25,11 @@ class ProjectAddView(LoginRequiredMixin, FormView):
     template_name = "projects/project_add.html"
 
     def get_context_data(self, **kwargs):
-        project_form = NewProjectForm(self.request.POST or None)
+        project_form = ProjectForm(self.request.POST or None)
         return {'form': project_form}
 
     def post(self, request, *args, **kwargs):
-        project_form = NewProjectForm(request.POST)
-
-        # TODO: если цвет невалиден, идет редирект и форма очищается, а нужно просто уведомлять
-        #  об ошибке и не сбрасывать форму, (нужна промощь)
+        project_form = ProjectForm(request.POST)
         if project_form.is_valid():
             project = Project()
             project.user = request.user
@@ -45,28 +41,51 @@ class ProjectAddView(LoginRequiredMixin, FormView):
         return redirect('/projects/add')
 
 
-class ProjectView(LoginRequiredMixin, ListView):
+class ProjectView(LoginRequiredMixin, TemplateView):
     model = Record
     template_name = 'projects/project.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        id_ = self.kwargs.get('id')
+        pk = self.kwargs.get('pk')
 
         context = super(ProjectView, self).get_context_data(**kwargs)
-        project = Project.objects.filter(user_id=self.request.user.id, id=id_)
+        project = Project.objects.filter(id=pk)
+        if self.request.user.id != project.first().user_id:
+            return None
         prefetch_projects = Prefetch('project', queryset=project)
-        context['records'] = Record.objects.filter(project_id=id_).prefetch_related(prefetch_projects)
+        context['records'] = Record.objects.filter(project_id=pk).prefetch_related(prefetch_projects)
         context['title'] = project.first().name
         return context
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if context is None:
+            return HttpResponseNotFound()
+        return self.render_to_response(context)
+
     def post(self, request, **kwargs):
-        project_id = kwargs.get('id')
+        project_id = kwargs.get('pk')
         if 'project_delete' in request.POST:
             project = Project.objects.get(id=project_id)
             project.delete()
             return redirect(f'/projects/')
+        elif 'project_edit' in request.POST:
+            return redirect(f'/projects/{project_id}/edit/')
         record_id = int(request.POST.get('id'))
         record = Record.objects.get(pk=record_id)
         record.endpoint = datetime.now()
         record.save()
         return redirect(f'/projects/{project_id}/')
+
+
+class ProjectEditView(LoginRequiredMixin, UpdateView):
+    model = Project
+    template_name = 'projects/project_edit.html'
+    form_class = ProjectForm
+    success_url = reverse_lazy('projects_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        project = self.get_object()
+        if project.user.id != request.user.id:
+            return HttpResponseNotFound()
+        return super().post(request, *args, **kwargs)

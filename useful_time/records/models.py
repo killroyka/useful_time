@@ -30,6 +30,7 @@ class Record(models.Model):
     def get_startpoint_isoformat(self) -> str:
         return self.startpoint.isoformat()
 
+    @property
     def get_back_longitude(self) -> int:
         """Метод для бэка. Возвращает время, потраченное на задание в секундах.
          Если запись ещё не завершена, то вернет -1"""
@@ -38,6 +39,7 @@ class Record(models.Model):
         time = self.endpoint - self.startpoint
         return time.seconds + (time.days * 24 * 60 * 60)
 
+    @property
     def get_front_longitude(self) -> str:
         """Метод для фронта. Возвращает время, потраченное на задание в человекочитаемом формате.
          Если запись ещё не завершена, то вернет строку 'Ещё идет' """

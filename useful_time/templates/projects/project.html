@@ -11,7 +11,6 @@
 {% include 'includes/base_records_list.html' %}
 <form method="POST">
     {% csrf_token %}
-<!--    <input class="btn btn-danger" type="submit" value="Удалить проект" name="project_delete">-->
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
         Удалить проект
     </button>
