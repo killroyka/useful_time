@@ -1,8 +1,9 @@
 from colorfield.fields import ColorField
 from django.db import models
 from .validators import validate_color
-
 from users.models import User
+from django.apps import apps
+
 
 
 class Project(models.Model):
@@ -18,3 +19,13 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_diogramm_data(self):
+        records = apps.get_model('records.Record').objects.filter(project__id=self.id)
+        diogramm_data_names = []
+        diogramm_data = []
+        for record in records:
+            if record.get_back_longitude() != -1:
+                diogramm_data_names.append(record.name)
+                diogramm_data.append(record.get_back_longitude())
+        return {"diogramm_data_names": diogramm_data_names, "diogramm_data": diogramm_data}

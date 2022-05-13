@@ -13,7 +13,9 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
-
+from django_currentuser.middleware import (
+    get_current_user, get_current_authenticated_user)
+from projects.models import Project
 
 from users.forms import RegistrationForm
 
@@ -86,3 +88,10 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 
 class Profile(LoginRequiredMixin, TemplateView):
     template_name = 'users/profile.html'
+
+    def get_context_data(self, **kwargs):
+        user = get_current_user()
+        projects = Project.objects.filter(user__id=user.id)
+        diogramm_data_names = ["WordPress", "Joomla", "Drupal", "Blogger", "Magento"]
+        diogramm_data = [60.7, 7.4, 5.1, 2.9, 2.8]
+        return {"projects": projects, "diogramm_data_names": diogramm_data_names, "diogramm_data": diogramm_data}
