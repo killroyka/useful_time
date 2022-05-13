@@ -25,7 +25,7 @@ class Project(models.Model):
         diogramm_data_names = []
         diogramm_data = []
         for record in records:
-            if record.get_back_longitude() != -1:
+            if record.get_back_longitude != -1:
                 diogramm_data_names.append(record.name)
-                diogramm_data.append(record.get_back_longitude())
+                diogramm_data.append(record.get_back_longitude)
         return {"diogramm_data_names": diogramm_data_names, "diogramm_data": diogramm_data}
