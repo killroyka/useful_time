@@ -10,9 +10,14 @@
         </h2>
         <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
              aria-labelledby="heading{{forloop.counter}}">
+
             <div class="accordion-body">
-                if
+                {% if project.records.all %}
+                <h1 class="display-6">Статистика всех записей проекта:</h1>
                 {%include 'includes/diogramm.html'%}
+                {% endif %}
+                <hr>
+                <input>
             </div>
         </div>
     </div>

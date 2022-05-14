@@ -7,7 +7,7 @@
 {% block content %}
 
 {% load static %}
-<h1 class="form_alert">Список записей в проекте "{{ title }}" </h1>
+<h1 class="form_alert display-4">Список записей в проекте "{{ title }}" </h1>
 {% include 'includes/base_records_list.html' %}
 <form method="POST">
     {% csrf_token %}
