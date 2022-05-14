@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.timezone import utc
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
 from .forms import NewRecordForm, RecordForm
@@ -24,7 +25,7 @@ class RecordListView(LoginRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         record_id = int(request.POST.get('id'))
         record = Record.objects.get(pk=record_id)
-        record.endpoint = datetime.now()
+        record.endpoint = datetime.now().replace(tzinfo=utc)
         record.save()
 
         return redirect(reverse_lazy('records_list'))
@@ -35,6 +36,12 @@ class RecordView(LoginRequiredMixin, UpdateView):
     template_name = 'records/record.html'
     form_class = RecordForm
     success_url = reverse_lazy('records_list')
+
+    def get_context_data(self, **kwargs):
+        form = self.get_form()
+        queryset = Project.objects.filter(user_id=self.request.user.id)
+        form.fields['project'].__init__(queryset)
+        return {'form': form}
 
     def dispatch(self, request, *args, **kwargs):
         record = self.get_object()
@@ -52,18 +59,21 @@ class RecordView(LoginRequiredMixin, UpdateView):
 
 class RecordAddView(LoginRequiredMixin, FormView):
     template_name = 'records/record_add.html'
+    form_class = NewRecordForm
 
     def get_context_data(self, **kwargs):
-        form = NewRecordForm(self.request.POST or None)
+        form = RecordAddView.form_class(self.request.POST or None)
+        queryset = Project.objects.filter(user_id=self.request.user.id)
+        form.fields['project'].__init__(queryset)
         return {'form': form}
 
     def post(self, request, *args, **kwargs):
-        form = NewRecordForm(request.POST)
+        form = RecordAddView.form_class(request.POST)
         if form.is_valid():
             record = Record()
             record.project = form.cleaned_data["project"]
             if form.cleaned_data["start_right_now"]:
-                record.startpoint = datetime.now()
+                record.startpoint = datetime.now().replace(tzinfo=utc)
             else:
                 record.startpoint = form.cleaned_data["startpoint"]
             record.name = form.cleaned_data["name"]
