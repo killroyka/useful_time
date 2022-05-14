@@ -18,7 +18,7 @@
                     <div class="d-flex justify-content-between my-2">
                         {% if field.name == "color"%}
                         <input type="color" id="id_color" name="color"
-                               value="#FFFFFF">
+                               value="{{ field.value }}">
                         <label for="head">Цвет проекта</label>
                         {% else %}
                         {{ field.label_tag }} {{ field }}
