@@ -9,7 +9,7 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordResetDoneView,
                                        PasswordResetView)
 from django.core.mail import EmailMessage
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
@@ -17,7 +17,8 @@ from django_currentuser.middleware import (
     get_current_user, get_current_authenticated_user)
 from projects.models import Project
 
-from users.forms import RegistrationForm
+from users.forms import RegistrationForm, EmailValidationResetPasswordForm
+from users.models import User
 
 
 class UserLoginView(LoginView):
@@ -66,7 +67,7 @@ class UserPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 
 
 class UserPasswordResetView(PasswordResetView):
-    form_class = PasswordResetForm
+    form_class = EmailValidationResetPasswordForm
     success_url = reverse_lazy('password_reset_done')
     template_name = 'users/password_reset.html'
 

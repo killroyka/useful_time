@@ -21,12 +21,12 @@
                                value="#FFFFFF">
                         <label for="head">Цвет проекта</label>
                         {% else %}
-                        {{ field.label_tag }} {{ field }}
+                            {{ field.label_tag }} {{ field }}
                         {% endif %}
                     </div>
                     <div class="form-text">
                         {% if field.help_text %}
-                        <p class="help">{{ field.help_text|safe }}</p>
+                            <p class="help">{{ field.help_text|safe }}</p>
                         {% endif %}
                     </div>
                 </div>

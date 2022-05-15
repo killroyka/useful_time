@@ -9,10 +9,12 @@ from .models import Record
 
 
 class RecordForm(ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
         super(RecordForm, self).__init__(*args, **kwargs)
         self.initial['startpoint'] = self.initial['startpoint'].strftime(DATE_INPUT_FORMATS[0])
         self.initial['endpoint'] = self.initial['endpoint'].strftime(DATE_INPUT_FORMATS[0])
+        if user is not None:
+            self.initial['project'].queryset = self.initial['project'].queryset.filter(user_id=user.id)
 
     class Meta:
         model = Record
