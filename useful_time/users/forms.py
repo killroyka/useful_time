@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.exceptions import ValidationError
 
 from users.models import User
 
@@ -24,3 +26,12 @@ class RegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class EmailValidationResetPasswordForm(PasswordResetForm):
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not User.objects.filter(email__iexact=email, is_active=True).exists():
+            raise ValidationError("Введён некорректный почтовый адрес!")
+
+        return email

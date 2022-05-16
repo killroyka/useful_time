@@ -5,7 +5,7 @@
 {% block content %}
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% include 'includes/universal_form.html' with message='Редактирование таймера' %}
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
         Удалить таймер
     </button>

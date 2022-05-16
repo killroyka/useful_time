@@ -1,16 +1,20 @@
 from datetime import datetime
 
-from django.forms import ModelForm, DateInput, BooleanField, CheckboxInput
+from dateutil.tz import tzlocal
+from django.forms import BooleanField
 from django.forms import ModelForm, DateInput
 
+from useful_time.settings import DATE_INPUT_FORMATS
 from .models import Record
 
 
 class RecordForm(ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
         super(RecordForm, self).__init__(*args, **kwargs)
-        self.initial['startpoint'] = self.initial['startpoint'].replace(microsecond=0, tzinfo=None).isoformat()
-        self.initial['endpoint'] = self.initial['endpoint'].replace(microsecond=0, tzinfo=None).isoformat()
+        self.initial['startpoint'] = self.initial['startpoint'].strftime(DATE_INPUT_FORMATS[0])
+        self.initial['endpoint'] = self.initial['endpoint'].strftime(DATE_INPUT_FORMATS[0])
+        if user is not None:
+            self.initial['project'].queryset = self.initial['project'].queryset.filter(user_id=user.id)
 
     class Meta:
         model = Record
@@ -34,7 +38,6 @@ class RecordForm(ModelForm):
 class NewRecordForm(ModelForm):
     start_right_now = BooleanField(required=False, label='Начать запись сразу после отправки формы')
 
-
     class Meta(RecordForm.Meta):
         fields = ('name', 'project', 'startpoint')
         widgets = {
@@ -42,7 +45,7 @@ class NewRecordForm(ModelForm):
                 attrs={
                     'type': 'datetime-local',
                     'step': '1',
-                    'value': datetime.now().replace(microsecond=0).isoformat()
+                    'value': datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
                 },
             )
         }
