@@ -1,15 +1,15 @@
 from datetime import datetime
 
+from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils.timezone import utc
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
 from .forms import NewRecordForm, RecordForm
 from .models import Record
+from useful_time.settings import DATE_INPUT_FORMATS
 
 
 class RecordListView(LoginRequiredMixin, ListView):
@@ -26,7 +26,7 @@ class RecordListView(LoginRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         record_id = int(request.POST.get('id'))
         record = Record.objects.get(pk=record_id)
-        record.endpoint = datetime.now().replace(tzinfo=utc)
+        record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
         record.save()
 
         return redirect(reverse_lazy('records_list'))
@@ -86,7 +86,7 @@ class RecordAddView(LoginRequiredMixin, FormView):
             record = Record()
             record.project = form.cleaned_data["project"]
             if form.cleaned_data["start_right_now"]:
-                record.startpoint = datetime.now().replace(tzinfo=utc)
+                record.startpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
             else:
                 record.startpoint = form.cleaned_data["startpoint"]
             record.name = form.cleaned_data["name"]

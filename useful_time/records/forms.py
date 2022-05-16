@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from django.forms import ModelForm, DateInput, BooleanField, CheckboxInput
+from dateutil.tz import tzlocal
+from django.forms import BooleanField
 from django.forms import ModelForm, DateInput
-from django.utils.timezone import utc
 
 from useful_time.settings import DATE_INPUT_FORMATS
 from .models import Record
@@ -45,7 +45,7 @@ class NewRecordForm(ModelForm):
                 attrs={
                     'type': 'datetime-local',
                     'step': '1',
-                    'value': datetime.now().replace(tzinfo=utc).strftime(DATE_INPUT_FORMATS[0])
+                    'value': datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
                 },
             )
         }
