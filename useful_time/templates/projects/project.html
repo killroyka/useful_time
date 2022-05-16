@@ -5,33 +5,35 @@
 {% endblock %}
 
 {% block content %}
+<div class="container">
 
-{% load static %}
-<h1 class="form_alert display-4">Список записей в проекте "{{ title }}" </h1>
-{% include 'includes/base_records_list.html' %}
-<form method="POST">
-    {% csrf_token %}
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
-        Удалить проект
-    </button>
-    <div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Удаление проекта</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Вы уверенны, что хотите удалить проект?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Оставить</button>
-                    <input class="btn btn-danger" type="submit" value="Удалить проект" name="project_delete">
+    {% load static %}
+    <h1 class="form_alert display-4">Список записей в проекте "{{ title }}" </h1>
+    {% include 'includes/base_records_list.html' %}
+    <form method="POST">
+        {% csrf_token %}
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
+            Удалить проект
+        </button>
+        <div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Удаление проекта</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Вы уверенны, что хотите удалить проект?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Оставить</button>
+                        <input class="btn btn-danger" type="submit" value="Удалить проект" name="project_delete">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <input class="btn btn-outline-danger" type="submit" value="Изменить проект" name="project_edit">
-</form>
+        <input class="btn btn-outline-danger" type="submit" value="Изменить проект" name="project_edit">
+    </form>
+</div>
 <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}

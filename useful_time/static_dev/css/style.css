@@ -1,3 +1,19 @@
+.first {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+}
+
+.in-info {
+    background: rgba(156, 156, 156, .5);
+    width: 20%;
+}
+
+.yandex-logo {
+    width: 100%;
+}
+
 .category_name {
     display: flex;
     justify-content: center;
