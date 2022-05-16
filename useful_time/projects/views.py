@@ -52,16 +52,15 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         pk = self.kwargs.get('pk')
 
         context = super(ProjectView, self).get_context_data(**kwargs)
-        project = Project.objects.filter(id=pk).first()
+        project = Project.objects.get(id=pk)
 
         if project is None:
             return None
         if self.request.user.id != project.user_id:
             return None
 
-        prefetch_projects = Prefetch('project', queryset=project)
-        context['records'] = Record.objects.filter(project_id=pk).prefetch_related(prefetch_projects)
-        context['title'] = project.first().name
+        context['records'] = Record.objects.filter(project_id=pk)
+        context['title'] = project.name
         return context
 
     def get(self, request, *args, **kwargs):
