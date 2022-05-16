@@ -7,15 +7,16 @@ from projects.models import Project
 
 
 class Record(models.Model):
-    project = models.ForeignKey(Project, verbose_name='Проект', related_name="records", default='Безымянный промежуток',
-                                on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, verbose_name='Проект', related_name="records", on_delete=models.CASCADE)
     name = models.CharField('Название', help_text='не более 100 символов', max_length=100)
     startpoint = models.DateTimeField('Начало', blank=False, null=False)
     endpoint = models.DateTimeField('Конец', blank=True, null=True)
 
+
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
+
 
     def __str__(self):
         return self.name
@@ -24,8 +25,9 @@ class Record(models.Model):
         if self.endpoint is not None:
             if self.startpoint >= self.endpoint:
                 raise ValidationError('Обратите внимание на дату и время: нельзя закончить то, что ещё не началось')
-        if self.startpoint.replace(tzinfo=None) > datetime.now():
-            raise ValidationError('Нельзя запустить таймер в будущем')
+        if self.startpoint is not None:
+            if self.startpoint.replace(tzinfo=None) > datetime.now():
+                raise ValidationError('Нельзя запустить таймер в будущем')
 
     def get_startpoint_isoformat(self) -> str:
         return self.startpoint.isoformat()
