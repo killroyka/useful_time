@@ -1,0 +1,6 @@
+{% for sub_record in sub_records %}
+    <p>Начало: {{sub_record.startpoint}}</p>
+    <p>Окончание: {{sub_record.endpoint}}</p>
+    <p>Время: {{sub_record.get_front_longitude}}</p>
+    <hr>
+{% endfor %}

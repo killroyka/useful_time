@@ -63,3 +63,35 @@ class Record(models.Model):
         if seconds:
             out.append(f'{seconds} сек')
         return ' '.join(out)
+
+
+class SubRecord(models.Model):
+    record = models.ForeignKey(Record, verbose_name='Таймер', related_name='subrecords', on_delete=models.CASCADE)
+    startpoint = models.DateTimeField('Начало', blank=False, null=False)
+    endpoint = models.DateTimeField('Конец', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Подзапись'
+        verbose_name_plural = 'Подзаписи'
+
+    def get_front_longitude(self) -> str:
+        """Метод для фронта. Возвращает время, потраченное на задание в человекочитаемом формате.
+         Если запись ещё не завершена, то вернет строку 'Ещё идет' """
+        if self.endpoint is None:
+            return 'Ещё идет'
+        out = []
+        datetime = (self.endpoint - self.startpoint)
+        time = datetime.seconds
+        seconds = time % 60
+        minutes = time // 60 % 60
+        hours = time // 60 // 60 % 24
+        days = datetime.days
+        if days:
+            out.append(f'{days} дн')
+        if hours:
+            out.append(f'{hours} ч')
+        if minutes:
+            out.append(f'{minutes} мин')
+        if seconds:
+            out.append(f'{seconds} сек')
+        return ' '.join(out)

@@ -1,3 +1,4 @@
+{% load filters %}
 <a class="btn btn-primary" href="/records/add">Создать новый таймер</a>
 <div class="row d-flex justify-content-around">
     {% for record in records %}
@@ -16,16 +17,32 @@
                         {% if record.endpoint %}
                             <p>Время окончания: {{ record.endpoint }}</p>
                             <p>Время: {{ record.get_front_longitude }}</p>
-                        {% else %}
+                        {% elif sub_records|get_item:record.id %}
                             <form method="POST">
                                 {% csrf_token %}
                                 <p class="counter" data-start="{{ record.get_startpoint_isoformat }}"
                                    data-id="{{ record.id }}"></p>
                                 <input type="hidden" name="id" value="{{ record.id }}">
-                                <input class="btn btn-success" type="submit" value="Остановить таймер">
-
+                                <input class="btn btn-danger" type="submit" value="Остановить таймер" name="stop_timer">
+                            </form>
+                        {% else %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ record.id }}">
+                                <input class="btn btn-success" type="submit" value="Возобновить таймер" name="continue_timer">
+                                <input class="btn btn-danger" type="submit" value="Завершить таймер" name="end_timer">
                             </form>
                         {% endif %}
+                        <ul class="list-group list-group-flush">
+                            {% for record in record.subrecords.all %}
+                                {% if forloop.counter <= 5 %}
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <p>{{forloop.counter}}</p>
+                                        <p>{{record.get_front_longitude}}</p>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </a>

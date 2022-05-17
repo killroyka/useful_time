@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
 from .forms import NewRecordForm, RecordForm
-from .models import Record
+from .models import Record, SubRecord
 from useful_time.settings import DATE_INPUT_FORMATS
 
 
@@ -20,14 +20,40 @@ class RecordListView(LoginRequiredMixin, ListView):
         context = super(RecordListView, self).get_context_data(**kwargs)
         projects = Project.objects.filter(user_id=self.request.user.id)
         prefetch_projects = Prefetch('project', queryset=projects)
-        context['records'] = Record.objects.prefetch_related(prefetch_projects).filter(project__in=projects)
+
+        records = Record.objects.prefetch_related(prefetch_projects).filter(project__in=projects)
+        prefetch_records = Prefetch('record', queryset=records)
+
+        sub_records = SubRecord.objects.prefetch_related(prefetch_records).filter(record__in=records, endpoint=None)
+        records_and_sub_records = {record.id: None for record in records}
+
+        for sub_record in sub_records:
+            if sub_record.record_id in records_and_sub_records:
+                records_and_sub_records[sub_record.record_id] = sub_record
+        context['records'] = records
+        context['sub_records'] = records_and_sub_records
+
         return context
 
     def post(self, request, *args, **kwargs):
         record_id = int(request.POST.get('id'))
-        record = Record.objects.get(pk=record_id)
-        record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
-        record.save()
+        if 'stop_timer' in request.POST:
+            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None)[0]
+            sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            sub_record.save()
+        elif 'continue_timer' in request.POST:
+            record = Record.objects.get(pk=record_id)
+            sub_record = SubRecord(
+                record=record,
+                startpoint=datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            )
+            sub_record.save()
+        else:
+            dt = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+
+            record = Record.objects.get(pk=record_id)
+            record.endpoint = dt
+            record.save()
 
         return redirect(reverse_lazy('records_list'))
 
@@ -52,9 +78,16 @@ class RecordView(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        context = dict()
         form = self.get_form()
+
         form.fields['project'].queryset = form.fields['project'].queryset.filter(user_id=self.request.user.id)
-        return {'form': form}
+        sub_records = SubRecord.objects.filter(record_id=self.object.id)
+
+        context['form'] = form
+        context['sub_records'] = sub_records
+
+        return context
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
@@ -91,4 +124,9 @@ class RecordAddView(LoginRequiredMixin, FormView):
                 record.startpoint = form.cleaned_data["startpoint"]
             record.name = form.cleaned_data["name"]
             record.save()
+            sub_record = SubRecord(
+                record=record,
+                startpoint=record.startpoint
+            )
+            sub_record.save()
         return redirect(reverse_lazy('records_list'))
