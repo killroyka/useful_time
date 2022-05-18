@@ -5,6 +5,10 @@
     height: 400px;
 }
 
+.team-logo {
+    font-family: Roboto, sans-serif;
+}
+
 .in-info {
     background: rgba(156, 156, 156, .5);
     width: 20%;
@@ -47,6 +51,10 @@ a.item {
 
 .user_card {
     height: 300px;
+}
+
+.team-img {
+    height: 150px
 }
 
 #footer {
