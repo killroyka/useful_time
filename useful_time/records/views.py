@@ -3,7 +3,7 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
@@ -22,16 +22,8 @@ class RecordListView(LoginRequiredMixin, ListView):
         prefetch_projects = Prefetch('project', queryset=projects)
 
         records = Record.objects.prefetch_related(prefetch_projects).filter(project__in=projects)
-        prefetch_records = Prefetch('record', queryset=records)
 
-        sub_records = SubRecord.objects.prefetch_related(prefetch_records).filter(record__in=records, endpoint=None)
-        records_and_sub_records = {record.id: None for record in records}
-
-        for sub_record in sub_records:
-            if sub_record.record_id in records_and_sub_records:
-                records_and_sub_records[sub_record.record_id] = sub_record
         context['records'] = records
-        context['sub_records'] = records_and_sub_records
 
         return context
 
@@ -48,12 +40,6 @@ class RecordListView(LoginRequiredMixin, ListView):
                 startpoint=datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
             )
             sub_record.save()
-        else:
-            dt = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
-
-            record = Record.objects.get(pk=record_id)
-            record.endpoint = dt
-            record.save()
 
         return redirect(reverse_lazy('records_list'))
 
@@ -71,12 +57,6 @@ class RecordView(LoginRequiredMixin, UpdateView):
         record = Record.objects.prefetch_related(prefetch_projects).get(pk=self.kwargs['pk'])
         return record
 
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.endpoint is None or self.object.project.user.id != self.request.user.id:
-            return redirect(RecordView.success_url)
-        return super().dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = dict()
         form = self.get_form()
@@ -88,12 +68,6 @@ class RecordView(LoginRequiredMixin, UpdateView):
         context['sub_records'] = sub_records
 
         return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        if self.object.endpoint is None or self.object.project.user.id != self.request.user.id:
-            return redirect(RecordView.success_url)
-        return render(request, RecordView.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
         if 'record_delete' in request.POST:
@@ -118,15 +92,13 @@ class RecordAddView(LoginRequiredMixin, FormView):
         if form.is_valid():
             record = Record()
             record.project = form.cleaned_data["project"]
-            if form.cleaned_data["start_right_now"]:
-                record.startpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
-            else:
-                record.startpoint = form.cleaned_data["startpoint"]
             record.name = form.cleaned_data["name"]
             record.save()
-            sub_record = SubRecord(
-                record=record,
-                startpoint=record.startpoint
-            )
+            sub_record = SubRecord()
+            sub_record.record = record
+            if form.cleaned_data["start_right_now"]:
+                sub_record.startpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            else:
+                sub_record.startpoint = form.cleaned_data["startpoint"]
             sub_record.save()
         return redirect(reverse_lazy('records_list'))

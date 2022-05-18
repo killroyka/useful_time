@@ -9,3 +9,8 @@ def get_item(dictionary, key):
 @register.filter
 def get_endpoint(dictionary, key):
     return dictionary.get(key).endpoint
+
+
+@register.simple_tag
+def define(val):
+    return val
