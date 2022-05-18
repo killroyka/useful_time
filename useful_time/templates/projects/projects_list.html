@@ -4,7 +4,10 @@
 
 {% block content %}
 {% load static %}
-<h1 class="form_alert display-4">список проектов пользователя</h1>
-{% include 'includes/base_projects_list.html'%}
-<a class="btn btn-primary" href="add">Создать новый проект</a>
+<div class="container">
+
+    <h1 class="form_alert display-4">список проектов пользователя</h1>
+    {% include 'includes/base_projects_list.html'%}
+    <a class="btn btn-primary" href="add">Создать новый проект</a>
+</div>
 {% endblock %}

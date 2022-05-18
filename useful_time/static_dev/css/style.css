@@ -1,3 +1,23 @@
+.first {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+}
+
+.team-logo {
+    font-family: Roboto, sans-serif;
+}
+
+.in-info {
+    background: rgba(156, 156, 156, .5);
+    width: 20%;
+}
+
+.yandex-logo {
+    width: 100%;
+}
+
 .category_name {
     display: flex;
     justify-content: center;
@@ -31,6 +51,10 @@ a.item {
 
 .user_card {
     height: 300px;
+}
+
+.team-img {
+    height: 150px
 }
 
 #footer {
