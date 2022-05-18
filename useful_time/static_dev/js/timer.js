@@ -4,12 +4,14 @@ all_counters = document.querySelectorAll('.counter');
 
 Array.from(all_counters).forEach((element, index) => {
     date = new Date(element.dataset.start);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
     element.innerHTML = getTime(date);
 });
 
 setInterval( function () {
     Array.from(all_counters).forEach((element, index) => {
-        date = new Date((Number(element.dataset.start)) * 1000)
+        date = new Date(element.dataset.start);
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
         element.innerHTML = getTime(date);
     });
 }, 1000);
