@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db.models import Prefetch
 from django.urls import reverse_lazy
-from django.http import HttpResponseNotFound
+from django.http import Http404
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,7 +17,10 @@ class ProjectsListView(LoginRequiredMixin, TemplateView):
     template_name = "projects/projects_list.html"
 
     def get_context_data(self, **kwargs):
-        projects = Project.objects.prefetch_related("records").filter(user_id=self.request.user.id)
+        records = Record.objects.all()
+        prefetch_records = Prefetch("records", queryset=records)
+        projects = Project.objects.prefetch_related("user", prefetch_records) \
+            .filter(user_id=self.request.user.id).only("id", "name", "description", "color", "user_id")
         return {"projects": projects}
 
 
@@ -49,18 +52,21 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         pk = self.kwargs.get('pk')
 
         context = super(ProjectView, self).get_context_data(**kwargs)
-        project = Project.objects.filter(id=pk)
-        if self.request.user.id != project.first().user_id:
+        project = Project.objects.get(id=pk)
+
+        if project is None:
             return None
-        prefetch_projects = Prefetch('project', queryset=project)
-        context['records'] = Record.objects.filter(project_id=pk).prefetch_related(prefetch_projects)
-        context['title'] = project.first().name
+        if self.request.user.id != project.user_id:
+            return None
+
+        context['records'] = Record.objects.filter(project_id=pk)
+        context['title'] = project.name
         return context
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if context is None:
-            return HttpResponseNotFound()
+            raise Http404()
         return self.render_to_response(context)
 
     def post(self, request, **kwargs):
@@ -87,5 +93,5 @@ class ProjectEditView(LoginRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         project = self.get_object()
         if project.user.id != request.user.id:
-            return HttpResponseNotFound()
+            raise Http404()
         return super().post(request, *args, **kwargs)

@@ -1,13 +1,18 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-#p$ua0l-h11bg@d3=^*4i332srt$sy=lnl-7@^z+dq^tb6zru4'
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,7 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-DATE_INPUT_FORMATS = ['%Y.%m.%dT%H:%M:%S', ]
+DATE_INPUT_FORMATS = ['%Y-%m-%dT%H:%M:%S', ]
 DATE_FORMAT = DATE_INPUT_FORMATS[0]
 
 TIME_ZONE = 'UTC'
@@ -106,12 +111,16 @@ STATICFILES_DIRS = [
     BASE_DIR / "static_dev"
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_URL = '/auth/login'
 LOGIN_REDIRECT_URL = '/auth/profile'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/auth/login/'
 
 AUTH_USER_MODEL = 'users.User'
-LOGOUT_REDIRECT_URL = '/auth/login/'

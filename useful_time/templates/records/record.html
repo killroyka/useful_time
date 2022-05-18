@@ -3,15 +3,14 @@
 {% block title %}  Useful Time {% endblock %}
 
 {% block content %}
-<div class="container">
-    <form method="post">
-        {% csrf_token %}
-        {% include 'includes/universal_form.html' with message='Изменение записи' %}
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
-            Удалить таймер
-        </button>
-        <div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog"
+<form method="post">
+    {% csrf_token %}
+    {% include 'includes/universal_form.html' with message='Редактирование таймера' %}
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
+        Удалить таймер
+    </button>
+    <div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Удаление таймера</h5>
