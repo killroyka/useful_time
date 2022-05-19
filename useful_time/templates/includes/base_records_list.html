@@ -14,7 +14,7 @@
                         <p>Время начала: {{ start_end_points.0 }}</p>
                         {% if start_end_points.1 != 'Ещё идёт' %}
                             <p>Время окончания: {{ start_end_points.1 }}</p>
-                            <p>Время: {{ record.get_front_longitude }}</p>
+                            <p>Чистое время: {{ record.get_clean_front_longitude }}</p>
                             <form method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{ record.id }}">
@@ -23,7 +23,8 @@
                         {% else %}
                             <form method="POST">
                                 {% csrf_token %}
-                                <p>{{record.get_front_longitude}}</p>
+                                <p class="counter" data-time="{{ record.get_clean_back_longitude }}"
+                                   data-id="{{ record.id }}"></p>
                                 <input type="hidden" name="id" value="{{ record.id }}">
                                 <input class="btn btn-danger" type="submit" value="Остановить таймер" name="stop_timer">
                             </form>
