@@ -95,13 +95,14 @@ class Record(models.Model):
         self.sub_records = self.subrecords.all()
 
     def get_startpoint_and_endpoint(self) -> tuple:
-        startpoints = [i.startpoint for i in self.sub_records]
+        sub_records = self.subrecords.all()
+        startpoints = [i.startpoint for i in sub_records]
         if startpoints:
             startpoint = min(startpoints)
         else:
             startpoint = None
 
-        endpoints = [i.endpoint for i in self.sub_records]
+        endpoints = [i.endpoint for i in sub_records]
         if all(endpoints):
             endpoint = max(endpoints)
         else:

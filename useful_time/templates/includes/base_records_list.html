@@ -14,7 +14,7 @@
                         <p>Время начала: {{ start_end_points.0 }}</p>
                         {% if start_end_points.1 != 'Ещё идёт' %}
                             <p>Время окончания: {{ start_end_points.1 }}</p>
-                            <p>Чистое время: {{ record.get_clean_front_longitude }}</p>
+                            <p>Время за делом: {{ record.get_clean_front_longitude }}</p>
                             <form method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{ record.id }}">
