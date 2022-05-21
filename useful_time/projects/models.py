@@ -1,6 +1,7 @@
 from colorfield.fields import ColorField
 from django.apps import apps
 from django.db import models
+from django.db.models import Sum
 from users.models import User
 
 from .validators import validate_color
@@ -20,12 +21,11 @@ class Project(models.Model):
         return self.name
 
     def get_diogramm_data(self):
-        records = apps.get_model('records.Record').objects.filter(project__id=self.id).prefetch_related("subrecords")
+        records = apps.get_model('records.Record').objects.filter(project__id=self.id).prefetch_related(
+            "subrecords").annotate(longitude=Sum("subrecords__longitude"))
         diogramm_data_names = []
         diogramm_data = []
         for record in records:
-            data = record.get_data()
-            if data["clean_back_longitude"] != -1:
-                diogramm_data_names.append(record.name)
-                diogramm_data.append(data["clean_back_longitude"])
+            diogramm_data_names.append(record.name)
+            diogramm_data.append(record.longitude)
         return {"diogramm_data_names": diogramm_data_names, "diogramm_data": diogramm_data}

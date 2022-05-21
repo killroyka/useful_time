@@ -7,7 +7,6 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordResetConfirmView,
                                        PasswordResetDoneView,
                                        PasswordResetView)
-from django.db.models import Prefetch
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -15,7 +14,7 @@ from django.views.generic.base import TemplateView
 from django_currentuser.middleware import (
     get_current_user)
 from projects.models import Project
-from records.models import Record
+
 from users.forms import RegistrationForm, EmailValidationResetPasswordForm
 
 
@@ -76,7 +75,7 @@ class UserPasswordResetDoneView(PasswordResetDoneView):
 
 
 class UserPasswordResetConfirmView(PasswordResetConfirmView):
-    success_url = reverse_lazy('passrecordword_reset_complete')
+    success_url = reverse_lazy('password_reset_complete')
     template_name = 'users/password_reset_confirm.html'
 
 
@@ -90,6 +89,5 @@ class Profile(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         user = get_current_user()
-        record_prefetch = Prefetch("records", queryset=Record.objects.all())
-        projects = Project.objects.filter(user__id=user.id).prefetch_related(record_prefetch)
+        projects = Project.objects.filter(user__id=user.id)
         return {"projects": projects}
