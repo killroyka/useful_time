@@ -33,6 +33,11 @@ class RecordListView(LoginRequiredMixin, ListView):
         if 'stop_timer' in request.POST:
             sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
             sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+
+            record = sub_record.record
+            record.avg_longitude += sub_record.get_back_longitude
+            record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            record.save()
             sub_record.save()
         elif 'continue_timer' in request.POST:
             record = Record.objects.get(pk=record_id)
@@ -94,12 +99,14 @@ class RecordAddView(LoginRequiredMixin, FormView):
             record = Record()
             record.project = form.cleaned_data["project"]
             record.name = form.cleaned_data["name"]
-            record.save()
             sub_record = SubRecord()
             sub_record.record = record
             if form.cleaned_data["start_right_now"]:
                 sub_record.startpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+                record.startpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
             else:
                 sub_record.startpoint = form.cleaned_data["startpoint"]
+                record.startpoint = form.cleaned_data["startpoint"]
+            record.save()
             sub_record.save()
         return redirect(reverse_lazy('records_list'))

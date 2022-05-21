@@ -9,6 +9,9 @@ from projects.models import Project
 class Record(models.Model):
     project = models.ForeignKey(Project, verbose_name='Проект', related_name="records", on_delete=models.CASCADE)
     name = models.CharField('Название', help_text='не более 100 символов', max_length=100)
+    avg_longitude = models.IntegerField("Продолжительность", default=0)
+    startpoint = models.DateTimeField("Начало", blank=True, default=None, null=False)
+    endpoint = models.DateTimeField("Конец", blank=True, default=None, null=True)
 
     class Meta:
         verbose_name = 'Запись'
@@ -96,6 +99,7 @@ class SubRecord(models.Model):
          Если запись ещё не завершена, то вернет -1"""
         if self.endpoint is None:
             return -1
+        print(type(self.endpoint), type(self.startpoint))
         time = self.endpoint - self.startpoint
         return time.seconds + (time.days * 24 * 60 * 60)
 
