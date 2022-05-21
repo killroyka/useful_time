@@ -3,23 +3,21 @@ var days, hours, minutes, seconds;
 all_counters = document.querySelectorAll('.counter');
 
 Array.from(all_counters).forEach((element, index) => {
-    date = new Date(element.dataset.start);
-    date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
-    element.innerHTML = getTime(date);
+    element.dataset.time = String(Number(element.dataset.time) + 1)
+    element.innerHTML = getTime(element.dataset.time);
 });
 
 setInterval( function () {
     Array.from(all_counters).forEach((element, index) => {
-        date = new Date(element.dataset.start);
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
-        element.innerHTML = getTime(date);
+        element.dataset.time = String(Number(element.dataset.time) + 1)
+        element.innerHTML = getTime(element.dataset.time);
     });
 }, 1000);
 
 function getTime(start_date) {
 
-    var current_date = new Date();
-    var seconds = (current_date - start_date) / 1000;
+    var seconds = Number(start_date);
+    console.log(seconds);
 
     days = parseInt(seconds / 86400);
     seconds = seconds % 86400;
@@ -31,8 +29,8 @@ function getTime(start_date) {
     seconds = parseInt(seconds % 60);
 
     return '<span class="days">' + days +
-     ' <b>День</b></span> <span class="hours">' + hours +
-      ' <b>Час</b></span> <span class="minutes">' + minutes +
-      ' <b>Минута</b></span> <span class="seconds">' + seconds + ' <b>Секунда</b></span>';
+     ' <b>дн</b></span> <span class="hours">' + hours +
+      ' <b>ч</b></span> <span class="minutes">' + minutes +
+      ' <b>мин</b></span> <span class="seconds">' + seconds + ' <b>сек</b></span>';
 
 };

@@ -6,6 +6,7 @@
 <form method="post">
     {% csrf_token %}
     {% include 'includes/universal_form.html' with message='Редактирование таймера' %}
+    {% include 'includes/sub_records.html' %}
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
         Удалить таймер
     </button>
