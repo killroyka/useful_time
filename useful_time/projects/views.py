@@ -1,13 +1,16 @@
 from datetime import datetime
 
+from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
+from django.db.models import Sum, Min, Max, Count
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView, UpdateView
-from records.models import Record
+from records.models import Record, SubRecord
+from useful_time.settings import DATE_INPUT_FORMATS
 
 from .forms import ProjectForm
 from .models import Project
@@ -59,7 +62,11 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         if self.request.user.id != project.user_id:
             return None
         context['project'] = project
-        context['records'] = Record.objects.filter(project_id=pk)
+        context['records'] = Record.objects.prefetch_related("subrecords") \
+            .annotate(longitude=Sum("subrecords__longitude"),
+                      startpoint=Min("subrecords__startpoint"),
+                      endpoint=Max("subrecords__endpoint"),
+                      is_end=Count("subrecords", filter=Q(subrecords__endpoint=None))).filter(project_id=pk)
         context['title'] = project.name
         return context
 
@@ -78,9 +85,19 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         elif 'project_edit' in request.POST:
             return redirect(f'/projects/{project_id}/edit/')
         record_id = int(request.POST.get('id'))
-        record = Record.objects.get(pk=record_id)
-        record.endpoint = datetime.now()
-        record.save()
+        if 'stop_timer' in request.POST:
+            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
+            sub_record.endpoint = datetime.now(tzlocal())
+            sub_record.longitude = sub_record.get_back_longitude
+            sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            sub_record.save()
+        elif 'continue_timer' in request.POST:
+            record = Record.objects.get(pk=record_id)
+            sub_record = SubRecord(
+                record=record,
+                startpoint=datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            )
+            sub_record.save()
         return redirect(f'/projects/{project_id}/')
 
 

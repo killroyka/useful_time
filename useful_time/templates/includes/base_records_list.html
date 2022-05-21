@@ -14,11 +14,10 @@
                     {{ record.name }}
                 </div>
                 <div class="card-body">
-                    {% define record.get_data as record_data %}
-                    <p>Время начала: {{ record_data.front_startpoint_and_endpoint.0 }}</p>
-                    {% if record_data.front_startpoint_and_endpoint.1 != 'Ещё идёт' %}
-                        <p>Время окончания: {{ record_data.front_startpoint_and_endpoint.1 }}</p>
-                        <p>Время за делом: {{ record_data.clean_front_longitude }}</p>
+                    <p>Время начала: {{ record.startpoint }}</p>
+                    {% if record.is_end == 0 %}
+                        <p>Время конца: {{ record.endpoint }}</p>
+                        <p class="counter_stop" data-time="{{ record.longitude }}"></p>
                         <form method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{ record.id }}">
@@ -28,22 +27,12 @@
                     {% else %}
                         <form method="POST">
                             {% csrf_token %}
-                            <p class="counter" data-time="{{ record_data.clean_back_longitude }}"
+                            <p class="counter" data-time="{{ record.longitude }}"
                                data-id="{{ record.id }}"></p>
                             <input type="hidden" name="id" value="{{ record.id }}">
                             <input class="btn btn-danger" type="submit" value="Остановить таймер" name="stop_timer">
                         </form>
                     {% endif %}
-                    <ul class="list-group list-group-flush">
-                        {% for sub_record in record.sub_records %}
-                            {% if forloop.counter <= 5 %}
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <p>{{ forloop.counter }}</p>
-                                    <p>{{ sub_record.get_front_longitude }}</p>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
                 </div>
                 </div>
             </a>
