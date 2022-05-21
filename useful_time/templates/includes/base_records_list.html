@@ -2,44 +2,49 @@
 <a class="btn btn-primary" href="/records/add">Создать новый таймер</a>
 <div class="row d-flex justify-content-around">
     {% for record in records %}
-        {% define record.set_subrecords as _ %}
         <div class="col-sm-12 col-md-6 col-lg-4 my-3">
             <a href="/records/{{ record.id }}" class="item">
-                <div class="card" style="width: 100%; border: solid {{ record.project.color }}">
-                    <div class="card-header">
-                        {{ record.name }}
-                    </div>
-                    <div class="card-body">
-                        {% define record.get_front_startpoint_and_endpoint as start_end_points %}
-                        <p>Время начала: {{ start_end_points.0 }}</p>
-                        {% if start_end_points.1 != 'Ещё идёт' %}
-                            <p>Время окончания: {{ start_end_points.1 }}</p>
-                            <p>Время за делом: {{ record.get_clean_front_longitude }}</p>
-                            <form method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ record.id }}">
-                                <input class="btn btn-success" type="submit" value="Возобновить таймер" name="continue_timer">
-                            </form>
-                        {% else %}
-                            <form method="POST">
-                                {% csrf_token %}
-                                <p class="counter" data-time="{{ record.get_clean_back_longitude }}"
-                                   data-id="{{ record.id }}"></p>
-                                <input type="hidden" name="id" value="{{ record.id }}">
-                                <input class="btn btn-danger" type="submit" value="Остановить таймер" name="stop_timer">
-                            </form>
-                        {% endif %}
-                        <ul class="list-group list-group-flush">
-                            {% for record in record.sub_records %}
-                                {% if forloop.counter <= 5 %}
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <p>{{forloop.counter}}</p>
-                                        <p>{{record.get_front_longitude}}</p>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
+                {% if project %}
+                    <div class="card" style="width: 100%; border: solid {{ project.color }}">
+                {% else %}
+                    <div class="card" style="width: 100%; border: solid {{ record.project.color }}">
+                {% endif %}
+
+                <div class="card-header">
+                    {{ record.name }}
+                </div>
+                <div class="card-body">
+                    {% define record.get_data as record_data %}
+                    <p>Время начала: {{ record_data.front_startpoint_and_endpoint.0 }}</p>
+                    {% if record_data.front_startpoint_and_endpoint.1 != 'Ещё идёт' %}
+                        <p>Время окончания: {{ record_data.front_startpoint_and_endpoint.1 }}</p>
+                        <p>Время за делом: {{ record_data.clean_front_longitude }}</p>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ record.id }}">
+                            <input class="btn btn-success" type="submit" value="Возобновить таймер"
+                                   name="continue_timer">
+                        </form>
+                    {% else %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <p class="counter" data-time="{{ record_data.clean_back_longitude }}"
+                               data-id="{{ record.id }}"></p>
+                            <input type="hidden" name="id" value="{{ record.id }}">
+                            <input class="btn btn-danger" type="submit" value="Остановить таймер" name="stop_timer">
+                        </form>
+                    {% endif %}
+                    <ul class="list-group list-group-flush">
+                        {% for sub_record in record.sub_records %}
+                            {% if forloop.counter <= 5 %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <p>{{ forloop.counter }}</p>
+                                    <p>{{ sub_record.get_front_longitude }}</p>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
                 </div>
             </a>
         </div>

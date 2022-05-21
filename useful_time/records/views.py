@@ -7,9 +7,10 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
+from useful_time.settings import DATE_INPUT_FORMATS
+
 from .forms import NewRecordForm, RecordForm
 from .models import Record, SubRecord
-from useful_time.settings import DATE_INPUT_FORMATS
 
 
 class RecordListView(LoginRequiredMixin, ListView):
@@ -30,7 +31,7 @@ class RecordListView(LoginRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         record_id = int(request.POST.get('id'))
         if 'stop_timer' in request.POST:
-            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None)[0]
+            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
             sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
             sub_record.save()
         elif 'continue_timer' in request.POST:
