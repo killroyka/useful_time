@@ -3,12 +3,15 @@
     <script type="text/javascript">
         google.load("visualization", "1", {packages: ["corechart"]});
         google.setOnLoadCallback(drawChart);
+        {% define  project.get_diogramm_data as diogram_data%}
+
         function drawChart() {
             var re = /&#x27;/gi
-            var diogramm_data_names = [{%for item in project.get_diogramm_data.diogramm_data_names%} "{{item}}", {%endfor%}]
-            var diogramm_data = {{project.get_diogramm_data.diogramm_data}}
+            var diogramm_data_names = [{%for item in diogram_data.diogramm_data_names%} "{{item}}", {%endfor%}]
+            var diogramm_data =
+            {{diogram_data.diogramm_data}}
             var data = [["Заголовок", "Текст заголовка, все дела"]]
-            for (var i=0; i < diogramm_data_names.length; i++){
+            for (var i = 0; i < diogramm_data_names.length; i++) {
                 data.push([diogramm_data_names[i], diogramm_data[i]])
             }
             var data = google.visualization.arrayToDataTable(data);

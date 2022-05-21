@@ -2,14 +2,16 @@ from datetime import datetime
 
 from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Prefetch, QuerySet
+from django.db.models import Prefetch, QuerySet, Q
+from django.db.models import Sum, Min, Max, Count
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
+from useful_time.settings import DATE_INPUT_FORMATS
+
 from .forms import NewRecordForm, RecordForm
 from .models import Record, SubRecord
-from useful_time.settings import DATE_INPUT_FORMATS
 
 
 class RecordListView(LoginRequiredMixin, ListView):
@@ -21,16 +23,20 @@ class RecordListView(LoginRequiredMixin, ListView):
         projects = Project.objects.filter(user_id=self.request.user.id)
         prefetch_projects = Prefetch('project', queryset=projects)
 
-        records = Record.objects.prefetch_related(prefetch_projects).filter(project__in=projects)
-
+        records = Record.objects.prefetch_related(prefetch_projects).prefetch_related("subrecords") \
+            .filter(project__in=projects).annotate(longitude=Sum("subrecords__longitude"),
+                                                   startpoint=Min("subrecords__startpoint"),
+                                                   endpoint=Max("subrecords__endpoint"),
+                                                   is_end=Count("subrecords", filter=Q(subrecords__endpoint=None)))
         context['records'] = records
-
         return context
 
     def post(self, request, *args, **kwargs):
         record_id = int(request.POST.get('id'))
         if 'stop_timer' in request.POST:
-            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None)[0]
+            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
+            sub_record.endpoint = datetime.now(tzlocal())
+            sub_record.longitude = sub_record.get_back_longitude
             sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
             sub_record.save()
         elif 'continue_timer' in request.POST:
@@ -40,7 +46,6 @@ class RecordListView(LoginRequiredMixin, ListView):
                 startpoint=datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
             )
             sub_record.save()
-
         return redirect(reverse_lazy('records_list'))
 
 
