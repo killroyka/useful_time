@@ -1,6 +1,5 @@
-from datetime import datetime
+import datetime
 
-from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet, Q
 from django.db.models import Sum, Min, Max, Count
@@ -37,15 +36,15 @@ class RecordListView(LoginRequiredMixin, ListView):
         record_id = int(request.POST.get('id'))
         if 'stop_timer' in request.POST:
             sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
-            sub_record.endpoint = datetime.now(tzlocal())
+            sub_record.endpoint = datetime.datetime.now().replace(tzinfo=datetime.datetime.now().astimezone().tzinfo)
             sub_record.longitude = sub_record.get_back_longitude
-            sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            sub_record.endpoint = datetime.datetime.now().strftime(DATE_INPUT_FORMATS[0])
             sub_record.save()
         elif 'continue_timer' in request.POST:
             record = Record.objects.get(pk=record_id)
             sub_record = SubRecord(
                 record=record,
-                startpoint=datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+                startpoint=datetime.datetime.now().strftime(DATE_INPUT_FORMATS[0])
             )
             sub_record.save()
         return redirect(reverse_lazy('records_list'))
@@ -105,7 +104,8 @@ class RecordAddView(LoginRequiredMixin, FormView):
             sub_record = SubRecord()
             sub_record.record = record
             if form.cleaned_data["start_right_now"]:
-                sub_record.startpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+                sub_record.startpoint = datetime.datetime.now(
+                ).strftime(DATE_INPUT_FORMATS[0])
             else:
                 sub_record.startpoint = form.cleaned_data["startpoint"]
             sub_record.save()
