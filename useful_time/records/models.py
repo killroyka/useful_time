@@ -3,8 +3,18 @@ from projects.models import Project
 
 
 class Record(models.Model):
-    project = models.ForeignKey(Project, verbose_name='Проект', related_name="records", on_delete=models.CASCADE)
-    name = models.CharField('Название', help_text='не более 100 символов', max_length=100)
+    project = models.ForeignKey(
+        Project,
+        verbose_name='Проект',
+        related_name="records",
+        on_delete=models.CASCADE
+    )
+
+    name = models.CharField(
+        'Название',
+        help_text='не более 100 символов',
+        max_length=100
+    )
 
     class Meta:
         verbose_name = 'Запись'
@@ -15,18 +25,40 @@ class Record(models.Model):
 
 
 class SubRecord(models.Model):
-    record = models.ForeignKey(Record, verbose_name='Таймер', related_name='subrecords', on_delete=models.CASCADE)
-    startpoint = models.DateTimeField('Начало', blank=False, null=False)
-    endpoint = models.DateTimeField('Конец', blank=True, null=True)
-    longitude = models.IntegerField("продолжительность", blank=True, null=True, default=0)
+    record = models.ForeignKey(
+        Record,
+        verbose_name='Таймер',
+        related_name='subrecords',
+        on_delete=models.CASCADE
+    )
+
+    startpoint = models.DateTimeField(
+        'Начало',
+        blank=False,
+        null=False
+    )
+
+    endpoint = models.DateTimeField(
+        'Конец',
+        blank=True,
+        null=True
+    )
+
+    longitude = models.IntegerField(
+        'продолжительность',
+        blank=True,
+        null=True,
+        default=0
+    )
 
     class Meta:
         verbose_name = 'Подзапись'
         verbose_name_plural = 'Подзаписи'
-        ordering = ["-endpoint"]
+        ordering = ['-endpoint']
 
     def __str__(self):
-        return f"{self.record}(start:{bool(self.startpoint)}, stop:{bool(self.endpoint)})"
+        return f'{self.record}(start:{bool(self.startpoint)},' \
+               f' stop:{bool(self.endpoint)})'
 
     @property
     def get_back_longitude(self) -> int:
@@ -39,8 +71,9 @@ class SubRecord(models.Model):
 
     @property
     def get_front_longitude(self) -> str:
-        """Метод для фронта. Возвращает время, потраченное на задание в человекочитаемом формате.
-         Если запись ещё не завершена, то вернет строку 'Ещё идет' """
+        """Метод для фронта. Возвращает время, потраченное на
+         задание в человекочитаемом формате. Если запись ещё не
+          завершена, то вернет строку 'Ещё идет' """
         if self.endpoint is None:
             return 'Ещё идет'
         out = []

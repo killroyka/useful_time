@@ -42,15 +42,6 @@ class UserSignUpView(CreateView):
             return super().dispatch(request, *args, **kwargs)
         return redirect('/')
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = None
-    #     form_user = UserSignUpView.form_class(request.POST or None)
-    #     if form_user.is_valid():
-    #         message = EmailMessage('Подтверждение', 'Пароль 000000', to=[form_user.cleaned_data['email']])
-    #         message.send()
-    #         return self.form_valid(form_user)
-    #     return self.form_invalid(form_user)
-
 
 class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     form_class = PasswordChangeForm

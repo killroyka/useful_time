@@ -9,5 +9,5 @@ class RecordAdmin(admin.ModelAdmin):
 
 
 @admin.register(SubRecord)
-class RecordAdmin(admin.ModelAdmin):
+class SubRecordAdmin(admin.ModelAdmin):
     list_display = ("record", "startpoint", "endpoint")

@@ -6,8 +6,14 @@ from users.models import User
 
 
 class RegistrationForm(forms.ModelForm):
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label='Пароль',
+        widget=forms.PasswordInput
+    )
+    password2 = forms.CharField(
+        label='Подтверждение пароля',
+        widget=forms.PasswordInput
+    )
 
     class Meta:
         model = User
