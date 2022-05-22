@@ -1,18 +1,18 @@
 <div class="row d-flex justify-content-center">
     {% for project in projects %}
-    <div class="col-sm-12 col-md-6 col-lg-4 my-3">
-        <a class="item" href="{{ project.id }}">
-            <div class="card" style="height: 400px; border: 2px solid {{ project.color }}">
-                <div class="card-header">
-                    {{ project.name }}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Описание проекта</h5>
-                    <p class="card-text">{{ project.description }}</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for record in project.records.all %}
-                    {% if forloop.counter <= 5 %}
+        <div class="col-sm-12 col-md-6 col-lg-4 my-3">
+            <a class="item" href="{{ project.id }}">
+                <div class="card" style="height: 500px; border: 2px solid {{ project.color }}">
+                    <div class="card-header">
+                        {{ project.name }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Описание проекта</h5>
+                        <p class="card-text">{{ project.description }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for record in project.records.all %}
+                            {% if forloop.counter <= 5 %}
                     <li class="list-group-item d-flex justify-content-between"><p>{{record.name}}</p>
                         <p>{{record.get_front_longitude}}</p></li>
                     {% endif %}

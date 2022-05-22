@@ -27,7 +27,9 @@ class RecordListView(LoginRequiredMixin, ListView):
             .filter(project__in=projects).annotate(longitude=Sum("subrecords__longitude"),
                                                    startpoint=Min("subrecords__startpoint"),
                                                    endpoint=Max("subrecords__endpoint"),
-                                                   is_end=Count("subrecords", filter=Q(subrecords__endpoint=None)))
+                                                   is_end=Count("subrecords",
+                                                                filter=Q(subrecords__endpoint=None))) \
+            .order_by("endpoint")
         context['records'] = records
         return context
 
@@ -75,6 +77,7 @@ class RecordView(LoginRequiredMixin, UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         if 'record_delete' in request.POST:
             record = Record.objects.get(id=kwargs['pk'])
             record.delete()

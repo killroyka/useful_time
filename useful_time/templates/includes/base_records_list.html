@@ -1,8 +1,8 @@
 {% load filters %}
-<a class="btn btn-primary" href="/records/add">Создать новый таймер</a>
-<div class="row d-flex justify-content-around">
-    {% for record in records %}
-        <div class="col-sm-12 col-md-6 col-lg-4 my-3">
+<a class="btn btn-primary" href="/records/add?next={{ request.path }}">Создать новый таймер</a>
+<div class="row d-flex justify-content-around" style="flex-direction: row-reverse">
+    {% for record in records reversed %}
+        <div class="col-sm-12 my-3">
             <a href="/records/{{ record.id }}" class="item">
                 {% if project %}
                     <div class="card" style="width: 100%; border: solid {{ project.color }}">

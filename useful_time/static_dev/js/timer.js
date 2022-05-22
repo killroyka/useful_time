@@ -2,12 +2,15 @@ var days, hours, minutes, seconds;
 
 all_counters = document.querySelectorAll('.counter');
 all_stop_counters = document.querySelectorAll('.counter_stop');
+
 for (element of all_stop_counters) {
     element.dataset.time = String(Number(element.dataset.time) + 1);
     element.innerHTML = getTime(element.dataset.time);
 }
 Array.from(all_counters).forEach((element, index) => {
-    element.dataset.time = String(Number(element.dataset.time) + 1)
+    element.dataset.time = String(Number(element.dataset.time) + 1 +
+        Number(localStorage.getItem(element.dataset.id)))
+
     element.innerHTML = getTime(element.dataset.time);
 });
 
@@ -15,6 +18,7 @@ setInterval(function () {
     Array.from(all_counters).forEach((element, index) => {
         element.dataset.time = String(Number(element.dataset.time) + 1)
         element.innerHTML = getTime(element.dataset.time);
+        localStorage.setItem(element.dataset.id, String(1 + Number(localStorage.getItem(element.dataset.id))))
     });
 }, 1000);
 
