@@ -6,18 +6,15 @@ all_stop_counters = document.querySelectorAll('.counter_stop');
 for (element of all_stop_counters) {
     element.dataset.time = String(Number(element.dataset.time) + 1);
     element.innerHTML = getTime(element.dataset.time);
+    localStorage.setItem(element.dataset.id, "0")
 }
 Array.from(all_counters).forEach((element, index) => {
-    console.log(element.dataset.isend)
-    if (element.dataset.isend != 0) {
-        element.dataset.time = String(Number(element.dataset.time) +
-            Number(localStorage.getItem(element.dataset.id)))
-    } else {
-        element.dataset.time = String(Number(element.dataset.time) + 1)
-        localStorage.setItem(element.dataset.id, "0")
-    }
+    console.log(element.dataset.time - Number(localStorage.getItem(element.dataset.id)))
+    element.dataset.time = String(Number(element.dataset.time) +
+        Number(localStorage.getItem(element.dataset.id)))
     element.innerHTML = getTime(element.dataset.time);
-});
+})
+;
 
 setInterval(function () {
     Array.from(all_counters).forEach((element, index) => {
