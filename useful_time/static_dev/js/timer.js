@@ -8,9 +8,14 @@ for (element of all_stop_counters) {
     element.innerHTML = getTime(element.dataset.time);
 }
 Array.from(all_counters).forEach((element, index) => {
-    element.dataset.time = String(Number(element.dataset.time) + 1 +
-        Number(localStorage.getItem(element.dataset.id)))
-
+    console.log(element.dataset.isend)
+    if (element.dataset.isend != 0) {
+        element.dataset.time = String(Number(element.dataset.time) +
+            Number(localStorage.getItem(element.dataset.id)))
+    } else {
+        element.dataset.time = String(Number(element.dataset.time) + 1)
+        localStorage.setItem(element.dataset.id, "0")
+    }
     element.innerHTML = getTime(element.dataset.time);
 });
 
