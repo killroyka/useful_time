@@ -8,10 +8,9 @@
     <div class="container">
         {% load static %}
         <h1 class="form_alert display-4">Список записей в проекте "{{ title }}" </h1>
-        {% include 'includes/base_records_list.html' %}
         <form method="POST">
             {% csrf_token %}
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
+            <button type="button" class="btn btn-danger my-2" data-bs-toggle="modal" data-bs-target="#confirmDelete">
                 Удалить проект
             </button>
             <div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -32,8 +31,10 @@
                     </div>
                 </div>
             </div>
-            <input class="btn btn-outline-danger" type="submit" value="Изменить проект" name="project_edit">
+            <input class="btn btn-outline-danger my-2" type="submit" value="Изменить проект" name="project_edit">
         </form>
+        {% include 'includes/base_records_list.html' %}
+
     </div>
     <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 {% endblock %}

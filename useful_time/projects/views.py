@@ -66,7 +66,8 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             .annotate(longitude=Sum("subrecords__longitude"),
                       startpoint=Min("subrecords__startpoint"),
                       endpoint=Max("subrecords__endpoint"),
-                      is_end=Count("subrecords", filter=Q(subrecords__endpoint=None))).filter(project_id=pk)
+                      is_end=Count("subrecords", filter=Q(subrecords__endpoint=None))).filter(project_id=pk) \
+            .order_by("endpoint")
         context['title'] = project.name
         return context
 

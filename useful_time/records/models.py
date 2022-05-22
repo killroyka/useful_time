@@ -23,6 +23,7 @@ class SubRecord(models.Model):
     class Meta:
         verbose_name = 'Подзапись'
         verbose_name_plural = 'Подзаписи'
+        ordering = ["-endpoint"]
 
     def __str__(self):
         return f"{self.record}(start:{bool(self.startpoint)}, stop:{bool(self.endpoint)})"
