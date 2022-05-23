@@ -4,13 +4,22 @@ all_counters = document.querySelectorAll('.counter');
 all_stop_counters = document.querySelectorAll('.counter_stop');
 all_timepoint = document.querySelectorAll(".timepoint")
 var diff_UTC_time = new Date().getTimezoneOffset() * 60
-console.log(all_timepoint)
-
+console.log(all_timepoint[0].dataset.time)
+var a = new Date(value = new Date(all_timepoint[0].dataset.time).getTime())
+console.log(a)
 Array.from(all_timepoint).forEach((element, index) => {
-    console.log(new Date(element.dataset.time).getTime())
-    var time_with_timezone = new Date().setTime(new Date(element.dataset.time).valueOf() + (diff_UTC_time * 1000));
-    console.log(time_with_timezone)
-    element.innerHTML = String(new Date().setTime(time_with_timezone).toString());
+    var date = new Date(value = new Date(element.dataset.time).getTime())
+    if (element.classList[1] === "start") {
+        element.innerHTML = "Время первого начала: " + String(date.getFullYear()) + "." + String(date.getMonth())
+            + "." + String(date.getDate()) + "   " + String(date.getHours()) + ":" + String(date.getMinutes()) + "<br>"
+    } else if (element.classList[1] === "end") {
+        element.innerHTML = "Время конца: " + String(date.getFullYear()) + "." + String(date.getMonth())
+            + "." + String(date.getDate()) + "   " + String(date.getHours()) + ":" + String(date.getMinutes()) + "<br>"
+    } else if (element.classList[1] === "sub-start") {
+        element.innerHTML = "Время начала: " + String(date.getHours()) + ":" + String(date.getMinutes())
+    } else if (element.classList[1] === "sub-end") {
+        element.innerHTML = "Время конца: " + String(date.getHours()) + ":" + String(date.getMinutes())
+    }
 });
 console.log(all_timepoint)
 Array.from(all_stop_counters).forEach((element, index) => {

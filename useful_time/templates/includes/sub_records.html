@@ -7,8 +7,10 @@
                     Продолжительность: {{ sub_record.get_front_longitude }}
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Начало: {{ sub_record.startpoint|time:"H:i"}}</li>
-                    <li class="list-group-item">Окончание: {{ sub_record.endpoint|time:"H:i"}}</li>
+                    <li class="timepoint sub-start list-group-item" data-time="{{ sub_record.endpoint.isoformat }}">
+                        Начало: {{ sub_record.startpoint|time:"H:i"}}</li>
+                    <li class="timepoint sub-end list-group-item" data-time="{{ sub_record.endpoint.isoformat }}">
+                        Окончание: {{ sub_record.endpoint|time:"H:i"}}</li>
                 </ul>
             </div>
         </div>

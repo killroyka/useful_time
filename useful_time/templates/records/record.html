@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}  Useful Time {% endblock %}
-
+{% load static %}
 {% block content %}
     <form method="post">
         <div class="container">
@@ -31,5 +31,6 @@
             {% include 'includes/sub_records.html' %}
         </div>
     </form>
+    <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
 
 {% endblock %}
