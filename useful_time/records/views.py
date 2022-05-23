@@ -37,7 +37,8 @@ class RecordListView(LoginRequiredMixin, ListView):
 
     def post(self, request, *args, **kwargs):
         """Метод POST, обрабатывающий разные виды запроса (пауза,
-        старт таймера) и создающий соответствующие изменения в базе данных"""
+        старт таймера) и создающий соответствующие изменения в базе данных.
+        """
 
         record_id = int(request.POST.get('id'))
         if 'stop_timer' in request.POST:
@@ -101,7 +102,8 @@ class RecordView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         """Метод POST, который удаляет запись если есть соответсвующий
-         запрос, иначе вызывает метод 'родителя' """
+         запрос, иначе вызывает метод 'родителя'.
+         """
 
         if 'record_delete' in request.POST:
             record = Record.objects.get(id=kwargs['pk'])

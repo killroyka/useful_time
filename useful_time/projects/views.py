@@ -126,10 +126,10 @@ class ProjectEditView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         """Dispatch, проверящий на принадлежность выбранного проекта
-        текушему пользователю. Возвращает 404, если б"""
+        текушему пользователю. Возвращает 404, если пользоваьтель не совпал.
+        """
 
         project = self.get_object()
         if project.user.id != request.user.id:
-            raise HttpResponse("Данный проект принадлежит другому юзеру",
-                               status_code=401)
+            raise Http404()
         return super().post(request, *args, **kwargs)
