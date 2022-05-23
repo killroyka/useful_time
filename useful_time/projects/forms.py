@@ -12,6 +12,9 @@ class ProjectForm(ModelForm):
     def clean_color(self):
         data = self.cleaned_data['color']
         if not match('^#([A-Fa-f0-9]{6})$', data):
-            raise ValidationError('Цвет указан в неверном формате', code='invalid')
+            raise ValidationError(
+                'Цвет указан в неверном формате',
+                code='invalid'
+            )
 
         return data
