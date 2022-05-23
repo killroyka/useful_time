@@ -22,31 +22,47 @@ class RecordListView(LoginRequiredMixin, ListView):
         projects = Project.objects.filter(user_id=self.request.user.id)
         prefetch_projects = Prefetch('project', queryset=projects)
 
-        records = Record.objects.prefetch_related(prefetch_projects).prefetch_related("subrecords") \
-            .filter(project__in=projects).annotate(longitude=Sum("subrecords__longitude"),
-                                                   startpoint=Min("subrecords__startpoint"),
-                                                   endpoint=Max("subrecords__endpoint"),
-                                                   is_end=Count("subrecords",
-                                                                filter=Q(subrecords__endpoint=None))) \
+        records = Record.objects \
+            .prefetch_related(prefetch_projects) \
+            .prefetch_related("subrecords") \
+            .filter(project__in=projects) \
+            .annotate(longitude=Sum("subrecords__longitude"),
+                      startpoint=Min("subrecords__startpoint"),
+                      endpoint=Max("subrecords__endpoint"),
+                      is_end=Count("subrecords",
+                                   filter=Q(subrecords__endpoint=None))) \
             .order_by("endpoint")
         context['records'] = records
         return context
 
     def post(self, request, *args, **kwargs):
+        """Метод POST, обрабатывающий разные виды запроса (пауза,
+        старт таймера) и создающий соответствующие изменения в базе данных.
+        """
+
         record_id = int(request.POST.get('id'))
         if 'stop_timer' in request.POST:
-            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
-            sub_record.endpoint = datetime.datetime.now().replace(tzinfo=datetime.datetime.now().astimezone().tzinfo)
+            sub_record = SubRecord.objects.filter(
+                record_id=record_id, endpoint=None
+            ).first()
+            sub_record.endpoint = datetime.datetime.now() \
+                .replace(tzinfo=datetime.datetime.now().astimezone().tzinfo)
+
             sub_record.longitude = sub_record.get_back_longitude
-            sub_record.endpoint = datetime.datetime.now().strftime(DATE_INPUT_FORMATS[0])
+            sub_record.endpoint = datetime.datetime.now() \
+                .strftime(DATE_INPUT_FORMATS[0])
             sub_record.save()
+
         elif 'continue_timer' in request.POST:
             record = Record.objects.get(pk=record_id)
             sub_record = SubRecord(
                 record=record,
-                startpoint=datetime.datetime.now().strftime(DATE_INPUT_FORMATS[0])
+                startpoint=datetime.datetime.now().strftime(
+                    DATE_INPUT_FORMATS[0]
+                )
             )
             sub_record.save()
+
         return redirect(reverse_lazy('records_list'))
 
 
@@ -58,16 +74,25 @@ class RecordView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         prefetch_user = Prefetch('user', queryset=QuerySet(self.request.user))
-        projects = Project.objects.prefetch_related(prefetch_user).filter(user_id=self.request.user).only('name')
+        projects = Project.objects \
+            .prefetch_related(prefetch_user) \
+            .filter(user_id=self.request.user) \
+            .only('name')
+
         prefetch_projects = Prefetch('project', queryset=projects)
-        record = Record.objects.prefetch_related(prefetch_projects).get(pk=self.kwargs['pk'])
+        record = Record.objects. \
+            prefetch_related(prefetch_projects). \
+            get(pk=self.kwargs['pk'])
+
         return record
 
     def get_context_data(self, **kwargs):
         context = dict()
         form = self.get_form()
 
-        form.fields['project'].queryset = form.fields['project'].queryset.filter(user_id=self.request.user.id)
+        form.fields['project'].queryset = form.fields['project'] \
+            .queryset.filter(user_id=self.request.user.id)
+
         sub_records = SubRecord.objects.filter(record_id=self.object.id)
 
         context['form'] = form
@@ -76,7 +101,10 @@ class RecordView(LoginRequiredMixin, UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
+        """Метод POST, который удаляет запись если есть соответсвующий
+         запрос, иначе вызывает метод 'родителя'.
+         """
+
         if 'record_delete' in request.POST:
             record = Record.objects.get(id=kwargs['pk'])
             record.delete()
@@ -95,6 +123,8 @@ class RecordAddView(LoginRequiredMixin, FormView):
         return {'form': form}
 
     def post(self, request, *args, **kwargs):
+        """Метод POST, создающий таймер в базе данных"""
+
         form = RecordAddView.form_class(request.POST)
         if form.is_valid():
             record = Record()

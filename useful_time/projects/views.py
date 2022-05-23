@@ -4,7 +4,7 @@ from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, Q
 from django.db.models import Sum, Min, Max, Count
-from django.http import Http404
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -23,7 +23,9 @@ class ProjectsListView(LoginRequiredMixin, TemplateView):
         records = Record.objects.all()
         prefetch_records = Prefetch("records", queryset=records)
         projects = Project.objects.prefetch_related(prefetch_records) \
-            .filter(user_id=self.request.user.id).only("id", "name", "description", "color", "user_id")
+            .filter(user_id=self.request.user.id).only(
+            "id", "name", "description", "color", "user_id"
+        )
         return {"projects": projects}
 
 
@@ -61,13 +63,20 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             return None
         if self.request.user.id != project.user_id:
             return None
+
         context['project'] = project
-        context['records'] = Record.objects.prefetch_related("subrecords") \
+        context['records'] = Record.objects. \
+            prefetch_related("subrecords") \
             .annotate(longitude=Sum("subrecords__longitude"),
                       startpoint=Min("subrecords__startpoint"),
                       endpoint=Max("subrecords__endpoint"),
-                      is_end=Count("subrecords", filter=Q(subrecords__endpoint=None))).filter(project_id=pk) \
+                      is_end=Count(
+                          "subrecords",
+                          filter=Q(subrecords__endpoint=None)
+                      )) \
+            .filter(project_id=pk) \
             .order_by("endpoint")
+
         context['title'] = project.name
         return context
 
@@ -79,24 +88,31 @@ class ProjectView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, **kwargs):
         project_id = kwargs.get('pk')
+
         if 'project_delete' in request.POST:
             project = Project.objects.get(id=project_id)
             project.delete()
-            return redirect(f'/projects/')
+            return redirect('/projects/')
         elif 'project_edit' in request.POST:
             return redirect(f'/projects/{project_id}/edit/')
         record_id = int(request.POST.get('id'))
         if 'stop_timer' in request.POST:
-            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
+            sub_record = SubRecord.objects.filter(
+                record_id=record_id, endpoint=None
+            ).first()
             sub_record.endpoint = datetime.now(tzlocal())
             sub_record.longitude = sub_record.get_back_longitude
-            sub_record.endpoint = datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+            sub_record.endpoint = datetime.now(tzlocal()) \
+                .strftime(DATE_INPUT_FORMATS[0])
+
             sub_record.save()
         elif 'continue_timer' in request.POST:
             record = Record.objects.get(pk=record_id)
             sub_record = SubRecord(
                 record=record,
-                startpoint=datetime.now(tzlocal()).strftime(DATE_INPUT_FORMATS[0])
+                startpoint=datetime.now(tzlocal()).strftime(
+                    DATE_INPUT_FORMATS[0]
+                )
             )
             sub_record.save()
         return redirect(f'/projects/{project_id}/')
@@ -109,6 +125,10 @@ class ProjectEditView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('projects_list')
 
     def dispatch(self, request, *args, **kwargs):
+        """Dispatch, проверящий на принадлежность выбранного проекта
+        текушему пользователю. Возвращает 404, если пользоваьтель не совпал.
+        """
+
         project = self.get_object()
         if project.user.id != request.user.id:
             raise Http404()
