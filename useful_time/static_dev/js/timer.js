@@ -2,19 +2,32 @@ var days, hours, minutes, seconds;
 
 all_counters = document.querySelectorAll('.counter');
 all_stop_counters = document.querySelectorAll('.counter_stop');
-
-for (element of all_stop_counters) {
+all_timepoint = document.querySelectorAll(".timepoint")
+var diff_UTC_time = new Date().getTimezoneOffset() * 60
+var a = new Date(value = new Date(all_timepoint[0].dataset.time).getTime())
+Array.from(all_timepoint).forEach((element, index) => {
+    var date = new Date(value = new Date(element.dataset.time).getTime())
+    console.log(date.toDateString())
+    if (element.classList[1] === "start") {
+        element.innerHTML = "Время первого начала: " + date.toDateString() + " " + date.toLocaleTimeString()
+    } else if (element.classList[1] === "end") {
+        element.innerHTML = "Время конца: " + date.toDateString() + " " + date.toLocaleTimeString()
+    } else if (element.classList[1] === "sub-start") {
+        element.innerHTML = "Время начала: " + date.toLocaleTimeString()
+    } else if (element.classList[1] === "sub-end") {
+        element.innerHTML = "Время конца: " + date.toLocaleTimeString()
+    }
+});
+Array.from(all_stop_counters).forEach((element, index) => {
     element.dataset.time = String(Number(element.dataset.time) + 1);
     element.innerHTML = getTime(element.dataset.time);
     localStorage.setItem(element.dataset.id, "0")
-}
+});
 Array.from(all_counters).forEach((element, index) => {
-    console.log(element.dataset.time - Number(localStorage.getItem(element.dataset.id)))
     element.dataset.time = String(Number(element.dataset.time) +
         Number(localStorage.getItem(element.dataset.id)))
     element.innerHTML = getTime(element.dataset.time);
-})
-;
+});
 
 setInterval(function () {
     Array.from(all_counters).forEach((element, index) => {
@@ -53,5 +66,4 @@ function getTime(start_date) {
         ans += ' <span class="seconds">' + seconds + ' сек</span>'
     }
     return ans;
-
 };

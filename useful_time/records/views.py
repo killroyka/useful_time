@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
 from projects.models import Project
-from useful_time.settings import DATE_INPUT_FORMATS
 
 from .forms import NewRecordForm, RecordForm
 from .models import Record, SubRecord
@@ -41,25 +40,19 @@ class RecordListView(LoginRequiredMixin, ListView):
         """
 
         record_id = int(request.POST.get('id'))
+        print(datetime.datetime.now())
         if 'stop_timer' in request.POST:
-            sub_record = SubRecord.objects.filter(
-                record_id=record_id, endpoint=None
-            ).first()
-            sub_record.endpoint = datetime.datetime.now() \
-                .replace(tzinfo=datetime.datetime.now().astimezone().tzinfo)
-
+            sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
+            sub_record.endpoint = datetime.datetime.now()
             sub_record.longitude = sub_record.get_back_longitude
-            sub_record.endpoint = datetime.datetime.now() \
-                .strftime(DATE_INPUT_FORMATS[0])
+            sub_record.endpoint = datetime.datetime.now()
             sub_record.save()
 
         elif 'continue_timer' in request.POST:
             record = Record.objects.get(pk=record_id)
             sub_record = SubRecord(
                 record=record,
-                startpoint=datetime.datetime.now().strftime(
-                    DATE_INPUT_FORMATS[0]
-                )
+                startpoint=datetime.datetime.now()
             )
             sub_record.save()
 
@@ -134,8 +127,7 @@ class RecordAddView(LoginRequiredMixin, FormView):
             sub_record = SubRecord()
             sub_record.record = record
             if form.cleaned_data["start_right_now"]:
-                sub_record.startpoint = datetime.datetime.now(
-                ).strftime(DATE_INPUT_FORMATS[0])
+                sub_record.startpoint = datetime.datetime.now()
             else:
                 sub_record.startpoint = form.cleaned_data["startpoint"]
             sub_record.save()

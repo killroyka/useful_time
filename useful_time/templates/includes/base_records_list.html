@@ -14,9 +14,11 @@
                     {{ record.name }}
                 </div>
                 <div class="card-body">
-                    <p>Время начала: {{ record.startpoint }}</p>
+                    <p class="timepoint start" data-time="{{ record.startpoint.isoformat }}">Время первого
+                        начала: {{ record.startpoint }}</p>
                     {% if record.is_end == 0 %}
-                        <p>Время конца: {{ record.endpoint }}</p>
+                        <p class="timepoint end" data-time="{{ record.endpoint.isoformat }}">Время
+                            конца: {{ record.endpoint }}</p>
                         <p class="counter_stop" data-time="{{ record.longitude }}" data-id="{{ record.id }}"></p>
                         <form method="POST">
                             {% csrf_token %}

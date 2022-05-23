@@ -66,7 +66,7 @@ class SubRecord(models.Model):
          Если запись ещё не завершена, то вернет -1"""
         if self.endpoint is None:
             return -1
-        time = self.endpoint - self.startpoint
+        time = self.endpoint - self.startpoint.replace(tzinfo=None)
         return time.seconds + (time.days * 24 * 60 * 60)
 
     @property
