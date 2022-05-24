@@ -1,55 +1,54 @@
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container d-flex justify-content-between">
         <a class="navbar-brand" href="/">UsefulTime</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav d-flex justify-content-end">
-                {% include "includes/url_active_link.html" with url="/" text="Home"%}
+                {% include "includes/url_active_link.html" with url="/" text="Home" %}
 
                 {% url 'projects_list' as the_url %}
-                {% include "includes/url_active_link.html" with url=the_url text="Projects"%}
+                {% include "includes/url_active_link.html" with url=the_url text="Projects" %}
 
                 {% url 'records_list' as the_url %}
-                {% include "includes/url_active_link.html" with url=the_url text="Records"%}
+                {% include "includes/url_active_link.html" with url=the_url text="Records" %}
 
                 {% if user.is_authenticated %}
-                {% url 'profile' as the_url %}
-                {% include "includes/url_active_link.html" with url=the_url text="Profile"%}
+                    {% url 'profile' as the_url %}
+                    {% include "includes/url_active_link.html" with url=the_url text="Profile" %}
 
-                <a class="nav-link" href="{% url 'logout' %}" data-bs-toggle="modal" data-bs-target="#logoutConfirm">Logout</a>
-
-                <div class="modal fade" id="logoutConfirm" tabindex="-1" aria-labelledby="logoutConfirmLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Выход</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Вы уверены, что хотите выйти?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
-                                <a class="nav-link" href="{% url 'logout' %}">
-                                    <button type="button" class="btn btn-danger">Да</button>
-                                </a>
+                    <a class="nav-link" href="{% url 'logout' %}" data-bs-toggle="modal"
+                       data-bs-target="#logoutConfirm">Logout</a>
+                    <div class="modal fade" id="logoutConfirm" tabindex="-1" aria-labelledby="logoutConfirmLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Выход</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Вы уверены, что хотите выйти?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                                    <a class="nav-link" href="{% url 'logout' %}">
+                                        <button type="button" class="btn btn-danger">Да</button>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
                 {% else %}
 
-                {% url 'login' as the_url %}
-                {% include "includes/url_active_link.html" with url=the_url text="Login"%}
+                    {% url 'login' as the_url %}
+                    {% include "includes/url_active_link.html" with url=the_url text="Login" %}
 
-                {% url 'signup' as the_url %}
-                {% include "includes/url_active_link.html" with url=the_url text="Signup"%}
+                    {% url 'signup' as the_url %}
+                    {% include "includes/url_active_link.html" with url=the_url text="Signup" %}
                 {% endif %}
             </div>
         </div>

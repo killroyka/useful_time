@@ -9,13 +9,12 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordResetView)
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from django.views.generic.base import TemplateView
+from django.views.generic import CreateView, FormView
 from django_currentuser.middleware import (
     get_current_user)
 from projects.models import Project
-
-from users.forms import RegistrationForm, EmailValidationResetPasswordForm
+from users.forms import RegistrationForm, EmailValidationResetPasswordForm, UserEditForm
+from users.models import User
 
 
 class UserLoginView(LoginView):
@@ -75,10 +74,20 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'users/password_reset_complete.html'
 
 
-class Profile(LoginRequiredMixin, TemplateView):
+class Profile(LoginRequiredMixin, FormView):
+    model = User
     template_name = 'users/profile.html'
+    form_class = UserEditForm
+    success_url = reverse_lazy('profile')
 
     def get_context_data(self, **kwargs):
         user = get_current_user()
+        form = UserEditForm(initial={"username": user.username, "email": user.email})
         projects = Project.objects.filter(user__id=user.id)
-        return {"projects": projects}
+        return {"projects": projects, "form": form}
+
+    def post(self, request, *args, **kwargs):
+        form = Profile.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect(reverse_lazy('profile'))

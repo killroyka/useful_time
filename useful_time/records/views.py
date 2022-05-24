@@ -97,7 +97,6 @@ class RecordView(LoginRequiredMixin, UpdateView):
         """Метод POST, который удаляет запись если есть соответсвующий
          запрос, иначе вызывает метод 'родителя'.
          """
-
         if 'record_delete' in request.POST:
             record = Record.objects.get(id=kwargs['pk'])
             record.delete()
