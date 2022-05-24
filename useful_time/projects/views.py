@@ -17,6 +17,9 @@ from .models import Project
 
 
 class ProjectsListView(LoginRequiredMixin, TemplateView):
+    """
+    Отрисовка шаблона состоящего из списка проектов.
+    """
     template_name = "projects/projects_list.html"
 
     def get_context_data(self, **kwargs):
@@ -30,6 +33,9 @@ class ProjectsListView(LoginRequiredMixin, TemplateView):
 
 
 class ProjectAddView(LoginRequiredMixin, FormView):
+    """
+    Отрисовка шаблона добавления проекта.
+    """
     template_name = "projects/project_add.html"
 
     def get_context_data(self, **kwargs):
@@ -50,10 +56,17 @@ class ProjectAddView(LoginRequiredMixin, FormView):
 
 
 class ProjectView(LoginRequiredMixin, TemplateView):
+    """
+    Отрисовка шаблона проекта.
+    """
     model = Record
     template_name = 'projects/project.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        """
+        Контекст шаблона, если возвращает None,
+        значит, что проект пользоваьелю не принадлежит.
+        """
         pk = self.kwargs.get('pk')
 
         context = super(ProjectView, self).get_context_data(**kwargs)
@@ -119,6 +132,9 @@ class ProjectView(LoginRequiredMixin, TemplateView):
 
 
 class ProjectEditView(LoginRequiredMixin, UpdateView):
+    """
+    Отрисовка шаблона изменения проекта.
+    """
     model = Project
     template_name = 'projects/project_edit.html'
     form_class = ProjectForm

@@ -9,7 +9,13 @@ class ProjectForm(ModelForm):
         model = Project
         fields = ("name", "description", "color")
 
+    @property
     def clean_color(self):
+        """
+        Валидатор цвета (устаревший, т.к. на фронте используется
+        специальна форма ввода цвета, которая сама не
+        допустит невозможного ответа)
+        """
         data = self.cleaned_data['color']
         if not match('^#([A-Fa-f0-9]{6})$', data):
             raise ValidationError(
