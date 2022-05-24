@@ -1,8 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark">
     <div class="container d-flex justify-content-between">
         <a class="navbar-brand" href="/">UsefulTime</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -21,6 +21,7 @@
 
                     <a class="nav-link" href="{% url 'logout' %}" data-bs-toggle="modal"
                        data-bs-target="#logoutConfirm">Logout</a>
+
                     <div class="modal fade" id="logoutConfirm" tabindex="-1" aria-labelledby="logoutConfirmLabel"
                          aria-hidden="true">
                         <div class="modal-dialog">
@@ -42,6 +43,7 @@
                             </div>
                         </div>
                     </div>
+
                 {% else %}
 
                     {% url 'login' as the_url %}
