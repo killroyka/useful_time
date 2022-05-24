@@ -8,6 +8,11 @@ from .validators import validate_color
 
 
 class Project(models.Model):
+    """
+    Проектом мы называем объект содержащий в себе
+    записи или таймеры, привязан к ОДНОМУ пользователю.
+    """
+
     user = models.ForeignKey(
         User,
         verbose_name='Пользователь',
@@ -33,14 +38,21 @@ class Project(models.Model):
         validators=[validate_color]
     )
 
+
     class Meta:
         verbose_name = 'Проект'
         verbose_name_plural = 'Проекты'
+
 
     def __str__(self):
         return self.name
 
     def get_diogramm_data(self):
+        """
+        Метод для фронта. Возвращает данные для
+        отрисовки диограмм.
+        """
+
         records = apps.get_model(
             'records.Record'
         ).objects.filter(
