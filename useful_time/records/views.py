@@ -97,7 +97,6 @@ class RecordView(LoginRequiredMixin, UpdateView):
         """Метод POST, который удаляет запись если есть соответсвующий
          запрос, иначе вызывает метод 'родителя'.
          """
-
         if 'record_delete' in request.POST:
             record = Record.objects.get(id=kwargs['pk'])
             record.delete()
@@ -126,9 +125,6 @@ class RecordAddView(LoginRequiredMixin, FormView):
             record.save()
             sub_record = SubRecord()
             sub_record.record = record
-            if form.cleaned_data["start_right_now"]:
-                sub_record.startpoint = datetime.datetime.now()
-            else:
-                sub_record.startpoint = form.cleaned_data["startpoint"]
+            sub_record.startpoint = datetime.datetime.now()
             sub_record.save()
         return redirect(reverse_lazy('records_list'))

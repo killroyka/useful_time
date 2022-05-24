@@ -4,7 +4,7 @@ from dateutil.tz import tzlocal
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, Q
 from django.db.models import Sum, Min, Max, Count
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -128,7 +128,6 @@ class ProjectEditView(LoginRequiredMixin, UpdateView):
         """Dispatch, проверящий на принадлежность выбранного проекта
         текушему пользователю. Возвращает 404, если пользоваьтель не совпал.
         """
-
         project = self.get_object()
         if project.user.id != request.user.id:
             raise Http404()

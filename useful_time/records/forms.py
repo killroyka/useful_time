@@ -1,4 +1,3 @@
-from django.forms import BooleanField
 from django.forms import ModelForm, DateInput
 
 from .models import Record
@@ -33,11 +32,6 @@ class RecordForm(ModelForm):
 
 
 class NewRecordForm(ModelForm):
-    start_right_now = BooleanField(
-        required=False,
-        label='Начать запись сразу после отправки формы'
-    )
-
     class Meta(RecordForm.Meta):
         fields = ('name', 'project')
         widgets = {

@@ -5,6 +5,12 @@ from django.core.exceptions import ValidationError
 from users.models import User
 
 
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
+
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
         label='Пароль',
