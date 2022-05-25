@@ -1,19 +1,19 @@
 <div class="card_container my-5">
     <div class="card" style="width: 500px">
         <div class="card-header">
-            <h5 class="display-6">{{message}}</h5>
+            <h5 class="display-6">{{ message }}</h5>
         </div>
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 {% for field in form %}
-                {% if field.errors %}
-                <ol>
-                    {% for error in field.errors %}
-                    <li><strong>{{ error|escape }}</strong></li>
-                    {% endfor %}
-                </ol>
-                {% endif %}
+                    {% if field.errors %}
+                        <ol>
+                            {% for error in field.errors %}
+                                <li><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
                     <div class="fieldWrapper">
                         <div class="d-flex justify-content-between my-2">
                             {% if field.name == "color" %}
@@ -21,10 +21,7 @@
                                        value="{{ field.value }}">
                                 <label for="head">Цвет проекта</label>
                             {% else %}
-                                <div class="d-flex" style="flex-wrap: wrap; align-items: center; height: 30px">
-                                    <p class="">{{ field.label_tag }}  </p>
-                                    {{ field }}
-                                </div>
+                                {{ field.label_tag }} {{ field }}
                             {% endif %}
                         </div>
                         <div class="form-text">

@@ -17,10 +17,12 @@ class RecordListView(LoginRequiredMixin, ListView):
     template_name = 'records/records_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        """Метод возвращает словарь с полем records. В нем храниться QuerySet записей, к которым добавлена
+        сумма длин подзаписей, принадлещам к записи, начальную и конечную точки записи. Также поле is_end показывает
+         есть ли подзапись без конца. Таким образом можно понять идет сейчас запись или нет"""
         context = super(RecordListView, self).get_context_data(**kwargs)
         projects = Project.objects.filter(user_id=self.request.user.id)
         prefetch_projects = Prefetch('project', queryset=projects)
-
         records = Record.objects \
             .prefetch_related(prefetch_projects) \
             .prefetch_related("subrecords") \
@@ -29,8 +31,10 @@ class RecordListView(LoginRequiredMixin, ListView):
                       startpoint=Min("subrecords__startpoint"),
                       endpoint=Max("subrecords__endpoint"),
                       is_end=Count("subrecords",
-                                   filter=Q(subrecords__endpoint=None))) \
+                                   filter=Q(subrecords__endpoint=None)),
+                      startpoint_last_sub_record=Max("subrecords__startpoint")) \
             .order_by("endpoint")
+        print(records[0].startpoint_last_sub_record)
         context['records'] = records
         return context
 
@@ -66,6 +70,7 @@ class RecordView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('records_list')
 
     def get_object(self, queryset=None):
+        """Возвращает QuerySet record с дополнительными данными по проектам и пользователю record"""
         prefetch_user = Prefetch('user', queryset=QuerySet(self.request.user))
         projects = Project.objects \
             .prefetch_related(prefetch_user) \
@@ -76,21 +81,17 @@ class RecordView(LoginRequiredMixin, UpdateView):
         record = Record.objects. \
             prefetch_related(prefetch_projects). \
             get(pk=self.kwargs['pk'])
-
         return record
 
     def get_context_data(self, **kwargs):
+        """Возвращает словарь с заполненной формой для изменения записи и все подзаписи записи"""
         context = dict()
         form = self.get_form()
-
         form.fields['project'].queryset = form.fields['project'] \
             .queryset.filter(user_id=self.request.user.id)
-
         sub_records = SubRecord.objects.filter(record_id=self.object.id)
-
         context['form'] = form
         context['sub_records'] = sub_records
-
         return context
 
     def post(self, request, *args, **kwargs):
@@ -109,6 +110,7 @@ class RecordAddView(LoginRequiredMixin, FormView):
     form_class = NewRecordForm
 
     def get_context_data(self, **kwargs):
+        """Возвращает форму для сздания новой записи"""
         form = RecordAddView.form_class(self.request.POST or None)
         queryset = Project.objects.filter(user_id=self.request.user.id)
         form.fields['project'].__init__(queryset)

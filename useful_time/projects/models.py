@@ -52,7 +52,6 @@ class Project(models.Model):
         Метод для фронта. Возвращает данные для
         отрисовки диограмм.
         """
-
         records = apps.get_model(
             'records.Record'
         ).objects.filter(
