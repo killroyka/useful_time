@@ -34,7 +34,6 @@ class RecordListView(LoginRequiredMixin, ListView):
                                    filter=Q(subrecords__endpoint=None)),
                       startpoint_last_sub_record=Max("subrecords__startpoint")) \
             .order_by("endpoint")
-        print(records[0].startpoint_last_sub_record)
         context['records'] = records
         return context
 
