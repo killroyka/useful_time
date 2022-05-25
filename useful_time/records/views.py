@@ -69,8 +69,8 @@ class RecordView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('records_list')
 
     def dispatch(self, request, *args, **kwargs):
-        project = Project.objects.get(pk=kwargs.get('pk'))
-        if project.user_id != self.request.user.id:
+        record = Record.objects.get(pk=kwargs.get('pk'))
+        if record.project.user_id != self.request.user.id:
             raise Http404()
         return super(RecordView, self).dispatch(request, *args, **kwargs)
 
