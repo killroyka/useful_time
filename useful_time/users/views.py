@@ -81,12 +81,14 @@ class Profile(LoginRequiredMixin, FormView):
     success_url = reverse_lazy('profile')
 
     def get_context_data(self, **kwargs):
+        """Возвращает проекты пользователя и заполлненую форму для изменения профиля"""
         user = get_current_user()
         form = UserEditForm(initial={"username": user.username, "email": user.email})
         projects = Project.objects.filter(user__id=user.id)
         return {"projects": projects, "form": form}
 
     def post(self, request, *args, **kwargs):
+        """Сохраняет изменения в пользователе"""
         form = Profile.form_class(request.POST)
         if form.is_valid():
             form.save()

@@ -44,6 +44,7 @@ class ProjectAddView(LoginRequiredMixin, FormView):
 
     def post(self, request, *args, **kwargs):
         project_form = ProjectForm(request.POST)
+        print(type(project_form))
         if project_form.is_valid():
             project = Project()
             project.user = request.user

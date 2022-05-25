@@ -29,7 +29,8 @@
                     {% else %}
                         <form method="POST">
                             {% csrf_token %}
-                            <p class="counter" data-time="{{ record.longitude }}"
+                            <p class="counter" data-longitude="{{ record.longitude }}"
+                               data-startpoint_last_sub_record="{{ record.startpoint_last_sub_record.isoformat }}"
                                data-id="{{ record.id }}"></p>
                             <input type="hidden" name="id" value="{{ record.id }}">
                             <input class="btn btn-danger" type="submit" value="Остановить таймер" name="stop_timer">

@@ -3,6 +3,9 @@ from projects.models import Project
 
 
 class Record(models.Model):
+    """Модель записи.
+
+    являеться хранилищем подзаписей. Может иметь сколько угодно подзаписей"""
     project = models.ForeignKey(
         Project,
         verbose_name='Проект',
@@ -27,6 +30,9 @@ class Record(models.Model):
 
 
 class SubRecord(models.Model):
+    """Модел подзаписей.
+
+    Хранит в себе начало, конец и продолжительность промежутка"""
     record = models.ForeignKey(
         Record,
         verbose_name='Таймер',
