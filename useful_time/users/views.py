@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import (AuthenticationForm, PasswordChangeForm)
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordChangeDoneView,
@@ -14,12 +14,12 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from projects.models import Project
 from records.models import Record
-from users.forms import RegistrationForm, EmailValidationResetPasswordForm, UserEditForm
+from users.forms import RegistrationForm, EmailValidationResetPasswordForm, UserEditForm, LoginForm
 from users.models import User
 
 
 class UserLoginView(LoginView):
-    form_class = AuthenticationForm
+    form_class = LoginForm
     template_name = 'users/login.html'
 
     def dispatch(self, request, *args, **kwargs):

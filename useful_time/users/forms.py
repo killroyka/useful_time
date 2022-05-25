@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import PasswordResetForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 
 from users.models import User
@@ -21,9 +22,11 @@ class RegistrationForm(forms.ModelForm):
         widget=forms.PasswordInput
     )
 
+
     class Meta:
         model = User
         fields = ('username', 'email')
+
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
@@ -47,3 +50,28 @@ class EmailValidationResetPasswordForm(PasswordResetForm):
             raise ValidationError("Введён некорректный почтовый адрес!")
 
         return email
+
+
+class LoginForm(AuthenticationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).first() is None:
+            raise forms.ValidationError(
+                "Такого пользователя нет. Учтите, что поля чувствительны к регистру.")
+        else:
+            return username
+
+    def clean_password(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+        if username is not None and password:
+            user_cache = authenticate(self.request, username=username, password=password)
+            if user_cache is None:
+                raise forms.ValidationError(
+                    "Неверный пароль. Учтите, что поля чувствительны к регистру.")
+        return password
