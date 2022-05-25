@@ -9,7 +9,7 @@ class ProjectForm(ModelForm):
         model = Project
         fields = ("name", "description", "color")
 
-    @property
+
     def clean_color(self):
         """
         Валидатор цвета (устаревший, т.к. на фронте используется
