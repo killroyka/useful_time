@@ -60,6 +60,8 @@ Array.from(all_stop_counters).forEach((element, index) => {
 });
 // присваивает всем не остановленным таймерам красивую продолжительность
 Array.from(all_counters).forEach((element, index) => {
+    // Это строка присваевет element.dataset.time разницу между последним началом под записи и сейчашним времене и
+    // прибавляет длину всех записей. Таким образом мы узнаем сколько времени прошло с начала счета
     element.dataset.time = String((new Date().getTime() - new Date(element.dataset.startpoint_last_sub_record).getTime() + element.dataset.longitude * 1000) / 1000)
     element.innerHTML = getTime(element.dataset.time);
 });
