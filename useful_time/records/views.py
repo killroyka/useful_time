@@ -44,7 +44,6 @@ class RecordListView(LoginRequiredMixin, ListView):
         """
 
         record_id = int(request.POST.get('id'))
-        print(datetime.datetime.now())
         if 'stop_timer' in request.POST:
             sub_record = SubRecord.objects.filter(record_id=record_id, endpoint=None).first()
             sub_record.endpoint = datetime.datetime.now()
