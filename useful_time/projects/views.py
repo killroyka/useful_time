@@ -84,6 +84,7 @@ class ProjectView(LoginRequiredMixin, TemplateView):
                       is_end=Count("subrecords",
                                    filter=Q(subrecords__endpoint=None)),
                       startpoint_last_sub_record=Max("subrecords__startpoint")) \
+            .filter(project_id=pk) \
             .order_by("endpoint")
 
         context['title'] = project.name
