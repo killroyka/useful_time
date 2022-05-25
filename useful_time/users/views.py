@@ -7,13 +7,13 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordResetConfirmView,
                                        PasswordResetDoneView,
                                        PasswordResetView)
+from django.db.models import Prefetch
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView, UpdateView
-from django_currentuser.middleware import (
-    get_current_user)
+from django.views.generic import CreateView, UpdateView
 from projects.models import Project
+from records.models import Record
 from users.forms import RegistrationForm, EmailValidationResetPasswordForm, UserEditForm
 from users.models import User
 
@@ -88,7 +88,8 @@ class Profile(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         """Возвращает проекты пользователя и заполлненую форму для изменения профиля"""
         context = super(Profile, self).get_context_data(**kwargs)
-        projects = Project.objects.filter(user__id=self.request.user.id)
+        record_prefetch = Prefetch("records", queryset=Record.objects.all().prefetch_related("subrecords"))
+        projects = Project.objects.filter(user__id=self.request.user.id).prefetch_related(record_prefetch)
         context['projects'] = projects
         return context
 
