@@ -57,12 +57,10 @@ Array.from(all_timepoint).forEach((element, index) => {
 Array.from(all_stop_counters).forEach((element, index) => {
     element.dataset.time = String(Number(element.dataset.time) + 1);
     element.innerHTML = getTime(element.dataset.time);
-    localStorage.setItem(element.dataset.id, "0")
 });
 // присваивает всем не остановленным таймерам красивую продолжительность
 Array.from(all_counters).forEach((element, index) => {
-    console.log(new Date() - new Date(element.dataset.time) + element.dataset.longitude)
-    element.dataset.time = String(new Date() - new Date(element.dataset.time) + element.dataset.longitude)
+    element.dataset.time = String((new Date().getTime() - new Date(element.dataset.startpoint_last_sub_record).getTime() + element.dataset.longitude * 1000) / 1000)
     element.innerHTML = getTime(element.dataset.time);
 });
 // обновляет данные таймеров каждую секунду
@@ -70,7 +68,6 @@ setInterval(function () {
     Array.from(all_counters).forEach((element, index) => {
         element.dataset.time = String(Number(element.dataset.time) + 1)
         element.innerHTML = getTime(element.dataset.time);
-        localStorage.setItem(element.dataset.id, String(1 + Number(localStorage.getItem(element.dataset.id))))
     });
 }, 1000);
 

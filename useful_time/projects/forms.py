@@ -1,7 +1,9 @@
+from re import match
+
 from django.forms import ModelForm
 from django.forms import ValidationError
+
 from .models import Project
-from re import match
 
 
 class ProjectForm(ModelForm):
@@ -9,7 +11,6 @@ class ProjectForm(ModelForm):
         model = Project
         fields = ("name", "description", "color")
 
-    @property
     def clean_color(self):
         """
         Валидатор цвета (устаревший, т.к. на фронте используется
