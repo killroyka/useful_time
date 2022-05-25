@@ -14,22 +14,25 @@
                     {% endfor %}
                 </ol>
                 {% endif %}
-                <div class="fieldWrapper">
-                    <div class="d-flex justify-content-between my-2">
-                        {% if field.name == "color"%}
-                        <input type="color" id="id_color" name="color"
-                               value="{{ field.value }}">
-                        <label for="head">Цвет проекта</label>
-                        {% else %}
-                            {{ field.label_tag }} {{ field }}
-                        {% endif %}
+                    <div class="fieldWrapper">
+                        <div class="d-flex justify-content-between my-2">
+                            {% if field.name == "color" %}
+                                <input type="color" id="id_color" name="color"
+                                       value="{{ field.value }}">
+                                <label for="head">Цвет проекта</label>
+                            {% else %}
+                                <div class="d-flex" style="flex-wrap: wrap; align-items: center; height: 30px">
+                                    <p class="">{{ field.label_tag }}  </p>
+                                    {{ field }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-text">
+                            {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="form-text">
-                        {% if field.help_text %}
-                            <p class="help">{{ field.help_text|safe }}</p>
-                        {% endif %}
-                    </div>
-                </div>
                 {% endfor %}
                 <input class="btn btn-primary" type="submit" value="Продолжить">
             </form>
