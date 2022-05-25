@@ -11,8 +11,7 @@ class Record(models.Model):
         verbose_name='Проект',
         related_name="records",
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
+        null=True
     )
 
     name = models.CharField(

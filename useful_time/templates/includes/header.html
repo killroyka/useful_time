@@ -16,7 +16,7 @@
                 {% include "includes/url_active_link.html" with url=the_url text="Records" %}
 
                 {% if user.is_authenticated %}
-                    {% url 'profile' as the_url %}
+                    {% url 'profile' user.id as the_url %}
                     {% include "includes/url_active_link.html" with url=the_url text="Profile" %}
 
                     <a class="nav-link" href="{% url 'logout' %}" data-bs-toggle="modal"

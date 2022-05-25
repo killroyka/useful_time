@@ -7,9 +7,10 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordResetConfirmView,
                                        PasswordResetDoneView,
                                        PasswordResetView)
+from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, UpdateView
 from django_currentuser.middleware import (
     get_current_user)
 from projects.models import Project
@@ -74,22 +75,22 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'users/password_reset_complete.html'
 
 
-class Profile(LoginRequiredMixin, FormView):
+class Profile(LoginRequiredMixin, UpdateView):
     model = User
     template_name = 'users/profile.html'
     form_class = UserEditForm
-    success_url = reverse_lazy('profile')
+
+    def dispatch(self, request, *args, **kwargs):
+        if kwargs.get('pk') != self.request.user.id:
+            raise Http404()
+        return super(Profile, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         """Возвращает проекты пользователя и заполлненую форму для изменения профиля"""
-        user = get_current_user()
-        form = UserEditForm(initial={"username": user.username, "email": user.email})
-        projects = Project.objects.filter(user__id=user.id)
-        return {"projects": projects, "form": form}
+        context = super(Profile, self).get_context_data(**kwargs)
+        projects = Project.objects.filter(user__id=self.request.user.id)
+        context['projects'] = projects
+        return context
 
-    def post(self, request, *args, **kwargs):
-        """Сохраняет изменения в пользователе"""
-        form = Profile.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-        return redirect(reverse_lazy('profile'))
+    def get_success_url(self):
+        return reverse_lazy('profile', kwargs={'pk': self.request.user.id})

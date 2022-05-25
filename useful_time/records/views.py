@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet, Q
 from django.db.models import Sum, Min, Max, Count
+from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
@@ -66,6 +67,12 @@ class RecordView(LoginRequiredMixin, UpdateView):
     template_name = 'records/record.html'
     form_class = RecordForm
     success_url = reverse_lazy('records_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        project = Project.objects.get(pk=kwargs.get('pk'))
+        if project.user_id != self.request.user.id:
+            raise Http404()
+        return super(RecordView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         """Возвращает QuerySet record с дополнительными данными по проектам и пользователю record"""

@@ -26,6 +26,6 @@ urlpatterns = [
          name='password_reset_complete'),
     # /Регистрация
 
-    path('profile/', views.Profile.as_view(), name='profile')
+    path('profile/<int:pk>', views.Profile.as_view(), name='profile')
 
 ]
