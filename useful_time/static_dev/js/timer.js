@@ -44,13 +44,13 @@ Array.from(all_timepoint).forEach((element, index) => {
     var date = new Date(element.dataset.time)
     // меняем информацию о обьекто в зависимости от его классов
     if (element.classList[1] === "start") {
-        element.innerHTML = "Время первого начала: " + date.toDateString() + " " + date.toLocaleTimeString()
+        element.innerHTML = "Время первого начала: " + date.toLocaleString()
     } else if (element.classList[1] === "end") {
-        element.innerHTML = "Время конца: " + date.toDateString() + " " + date.toLocaleTimeString()
+        element.innerHTML = "Время конца: " + date.toLocaleString()
     } else if (element.classList[1] === "sub-start") {
-        element.innerHTML = "Время начала: " + date.toLocaleTimeString()
+        element.innerHTML = "Начало: " + date.toLocaleString()
     } else if (element.classList[1] === "sub-end") {
-        element.innerHTML = "Время конца: " + date.toLocaleTimeString()
+        element.innerHTML = "Конец: " + date.toLocaleString()
     }
 });
 // присваивает всем остановленным таймерам красивую продолжительность
